@@ -1,0 +1,38 @@
+description = 'Put your description here'
+ext.details = "Details here"
+version = '1.0.0'
+
+dependencies {
+    compile 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+//    compile project(':sensorhub-service-video')
+//    compile project(':sensorhub-driver-videocam')
+    testImplementation('junit:junit:4.13')
+}
+
+// exclude tests requiring connection to the sensor
+// these have to be run manually
+//      If tests are to be excluded list them here as follows
+//          exclude '**/TestNameClass.class'
+test {
+    useJUnit()
+}
+
+// add info to OSGi manifest
+jar {
+    manifest {
+        instruction 'Bundle-Vendor', ''
+        instruction 'Bundle-Activator', 'com.sentinel.impl.sensor.video.smartcam.Activator'
+    }
+}
+
+// add info to maven pom
+ext.pom >>= {
+    developers {
+        developer {
+            id 'some id'
+            name 'Your name'
+            organization ''
+            organizationUrl ''
+        }
+    }
+}

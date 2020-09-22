@@ -1,0 +1,67 @@
+apply from: gradle.oshCoreDir + '/common.gradle'
+//version = oshCoreVersion
+version = "1.0.0"
+description = ''
+
+subprojects {
+  version = oshCoreVersion
+
+  // inject all repositories from included builds if any
+  repositories.addAll(rootProject.repositories)
+
+  // add project dependency to proper configuration depending on version
+  // this is used to build different zip distributions
+  afterEvaluate { p ->
+    rootProject.dependencies {
+      def dep = p.version.endsWith('SNAPSHOT') ? dev(p) : stable(p)
+      dep.exclude group: 'org.sensorhub'
+      dep.exclude group: 'org.vast.opengis'
+    }
+  }
+}
+
+// create one configuration for each distribution
+configurations {
+  stable
+  dev
+}
+
+distributions {
+  dev {
+    baseName = 'osh-node-dev'
+    contents {
+      from 'scripts'
+      from 'config'
+      from 'README.md'
+      into('web') {
+        from 'web'
+      }
+      into('lib') {
+        from project.configurations.compileClasspath
+      }
+      into('db'){
+        from 'data_files'
+      }
+    }
+  }
+
+  stable {
+    baseName = 'osh-node-stable'
+    contents {
+      from 'scripts'
+      from 'config'
+      from 'README.md'
+      into('web') {
+        from 'web'
+      }
+      into('lib') {
+        from project.configurations.compileClasspath
+      }
+      into('db'){
+        from 'data_files'
+      }
+    }
+  }
+}
+
+apply from: gradle.oshCoreDir + '/release.gradle'
