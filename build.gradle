@@ -1,52 +1,33 @@
 apply from: gradle.oshCoreDir + '/common.gradle'
-//version = oshCoreVersion
-version = "1.0.0"
 description = ''
 
-subprojects {
-  version = oshCoreVersion
+allprojects {
+  version = '0.0.1'
+}
 
+subprojects {
   // inject all repositories from included builds if any
   repositories.addAll(rootProject.repositories)
+}
 
-  // add project dependency to proper configuration depending on version
-  // this is used to build different zip distributions
-  afterEvaluate { p ->
-    rootProject.dependencies {
-      def dep = p.version.endsWith('SNAPSHOT') ? dev(p) : stable(p)
-      dep.exclude group: 'org.sensorhub'
-      dep.exclude group: 'org.vast.opengis'
-    }
-  }
+dependencies {
+  compile 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+  compile 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
+  compile 'org.sensorhub:sensorhub-storage-perst:' + oshCoreVersion
+  compile 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
+  compile project(':sensorhub-storage-h2')
+  compile project(':sensorhub-driver-videocam')
+  compile project(':sensorhub-service-video')
 }
 
 // create one configuration for each distribution
 configurations {
-  stable
-  dev
+  main
 }
 
 distributions {
-  dev {
-    baseName = 'osh-node-dev'
-    contents {
-      from 'scripts'
-      from 'config'
-      from 'README.md'
-      into('web') {
-        from 'web'
-      }
-      into('lib') {
-        from project.configurations.compileClasspath
-      }
-      into('db'){
-        from 'data_files'
-      }
-    }
-  }
-
-  stable {
-    baseName = 'osh-node-stable'
+  main {
+    baseName = 'osh-node'
     contents {
       from 'scripts'
       from 'config'
