@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'oot-bottsinc-build' }
+    agent any
     environment {
         // Change the following with the appropriate git URL to pull from and the docker URL to push to.
         GIT_URL = 'GIT-URL'
