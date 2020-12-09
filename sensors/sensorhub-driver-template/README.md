@@ -40,9 +40,9 @@ The following are a list of example requests and their respective responses.
 The **IP ADDRESS** and **PORT** will need to be specified and point to the instance
 of the OpenSensorHub node serving the data.
 
-### Platform Location Request
+### [Observed Property] Request
 - **HTTP**
-   - http://[IP ADDRESS]:[PORT]/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=[URN]&observedProperty=http://www.opengis.net/def/property/OGC/0/PlatformLocation&temporalFilter=phenomenonTime,[START_TIME]/[END_TIME]&replaySpeed=1&responseFormat=application/json
+   - http://[IP ADDRESS]:[PORT]/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=[URN]&observedProperty=[OBSERVED_PROPERTY]&temporalFilter=phenomenonTime,[START_TIME]/[END_TIME]&replaySpeed=1&responseFormat=application/json
 
 Response:
 ```
