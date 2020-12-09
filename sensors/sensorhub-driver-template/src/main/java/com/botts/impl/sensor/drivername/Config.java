@@ -3,7 +3,7 @@
  Copyright (C) 2020 Botts Innovative Research, Inc. All Rights Reserved.
 
 ******************************* END LICENSE BLOCK ***************************/
-package com.botts.impl.sensor.uas;
+package com.botts.impl.sensor.drivername;
 
 import org.sensorhub.api.config.DisplayInfo;
 import org.sensorhub.api.sensor.SensorConfig;

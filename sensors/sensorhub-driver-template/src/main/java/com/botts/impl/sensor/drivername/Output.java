@@ -2,7 +2,7 @@
 
  Copyright (C) 2020 Botts Innovative Research, Inc. All Rights Reserved.
  ******************************* END LICENSE BLOCK ***************************/
-package com.botts.impl.sensor.uas;
+package com.botts.impl.sensor.drivername;
 
 import net.opengis.swe.v20.*;
 import org.sensorhub.api.sensor.SensorDataEvent;
@@ -23,7 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * Output specification and provider for MISB-TS STANAG 4609 ST0601.16 UAS Metadata
+ * Output specification and provider for ...
  *
  * @author Nick Garay
  * @since Feb. 6, 2020

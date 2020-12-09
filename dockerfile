@@ -1,31 +1,23 @@
-# Multi-Stage Build
-FROM ubuntu:18.04 AS osh-build
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk git
-COPY osh-node ./osh-node
-
-RUN cd osh-node && \
-    chmod 755 gradlew && \
-    ./gradlew build -x test
-
 FROM ubuntu:18.04 AS osh-deployment
 
-ARG release=dev
-ARG version=1.0.0
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk git unzip curl nano certbot wget nginx
+
+ARG version=''
 
 # General system setup
 RUN useradd -r -s /bin/false/ osh && echo "US/Central" > /etc/timezone
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk git unzip curl nano certbot wget nginx
 
 # Install OSH Node
-COPY --from=osh-build  ./osh-node/build/distributions/osh-node-$release-$version.zip .
+ADD build/distributions/osh-node-$version.zip .
 ADD container/osh-service /etc/init.d/
+RUN awk -v version=$version '{ if ( $0~"OSH_HOME=/opt/osh" ) { print $0"-"version } else { print $0 } }' /etc/init.d/osh-service > /etc/init.d/osh-service-versioned && \
+    mv /etc/init.d/osh-service-versioned /etc/init.d/osh-service
 RUN chmod 755 /etc/init.d/osh-service
-RUN unzip osh-node.zip -d /opt && \
-    rm osh-node.zip && \
+RUN unzip osh-node-$version.zip -d /opt && \
+    rm osh-node-$version.zip && \
     chown -R osh:osh /opt/osh-node* && \
-    chmod 755 /opt/osh-node/launch.* && \
+    chmod 755 /opt/osh-node-$version/launch.* && \
     update-rc.d osh-service defaults && \
     update-rc.d osh-service enable
 
@@ -37,5 +29,6 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # Open ports
 EXPOSE 80 443
 
-CMD service osh-service start && \
+CMD sh -c 'ln -sfn /opt/osh-node /opt/osh-node-$version' && \
+    service osh-service start && \
     service nginx start

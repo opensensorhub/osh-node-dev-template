@@ -2,7 +2,7 @@
 
  Copyright (C) 2020 Botts Innovative Research, Inc. All Rights Reserved.
  ******************************* END LICENSE BLOCK ***************************/
-package com.botts.impl.sensor.uas;
+package com.botts.impl.sensor.drivername;
 
 import org.sensorhub.api.common.SensorHubException;
 import org.sensorhub.impl.sensor.AbstractSensorModule;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver for the UAS providing sensor description, output registration,
+ * Sensor driver for the ... providing sensor description, output registration,
  * initialization and shutdown of driver and outputs.
  *
  * @author Nick Garay
