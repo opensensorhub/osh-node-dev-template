@@ -1,9 +1,17 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
 
- Copyright (C) 2020 Botts Innovative Research, Inc. All Rights Reserved.
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
 
 ******************************* END LICENSE BLOCK ***************************/
-package com.botts.impl.sensor.drivername;
+package com.sample.impl.sensor.drivername;
 
 import org.sensorhub.api.config.DisplayInfo;
 import org.sensorhub.api.sensor.SensorConfig;
@@ -26,13 +34,9 @@ import org.sensorhub.api.sensor.SensorConfig;
 public class Config extends SensorConfig {
 
     /**
-     * The unique identifier for the configured UAS sensor platform.
+     * The unique identifier for the configured sensor (or sensor platform).
      */
     @DisplayInfo.Required
-    @DisplayInfo(desc="Serial number or unique identifier for UAS sensor platform")
-    public String serialNumber = "uas001";
-
-    @DisplayInfo.Required
-    @DisplayInfo(desc="MISB STANAG 4609 MPEG-TS data to be streamed, can be a path to a file or an ipAddress:port")
-    public String transportStreamPath;
+    @DisplayInfo(desc="Serial number or unique identifier")
+    public String serialNumber = "sensor001";
 }

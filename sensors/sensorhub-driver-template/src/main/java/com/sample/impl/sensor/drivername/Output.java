@@ -1,26 +1,28 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
 
- Copyright (C) 2020 Botts Innovative Research, Inc. All Rights Reserved.
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
+
  ******************************* END LICENSE BLOCK ***************************/
-package com.botts.impl.sensor.drivername;
+package com.sample.impl.sensor.drivername;
 
 import net.opengis.swe.v20.*;
 import org.sensorhub.api.sensor.SensorDataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vast.swe.SWEConstants;
-import org.vast.swe.SWEHelper;
 import org.vast.swe.helper.GeoPosHelper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.Boolean;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Output specification and provider for ...

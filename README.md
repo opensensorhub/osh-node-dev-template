@@ -3,15 +3,15 @@
  
 ### Repositories
 
-Osh-node-template
+osh-node-dev-template
 
-https://gitlab.com/botts/osh-node-template
+https://github.com/opensensorhub/osh-node-dev-template.git
 
  
 #### Synopsis
 The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command
  
-         git clone –recursive https://gitlab.com/botts/osh-node-template
+         git clone –recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
 Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
  
@@ -23,7 +23,7 @@ Each can be built and deployed individually and manually or can be built and dep
 
 Building the Node with Jetty deployable web server from the command line is as simple as checking the repository out and building with a simple command
  
-         git clone --recursive https://gitlab.com/botts/osh-node-template
+         git clone --recursive https://github.com/opensensorhub/osh-node-dev-template.git
          cd osh-node-template
          ./gradlew build -x test
  
@@ -38,7 +38,7 @@ Building a docker image is equally as simple and the resulting image will deploy
          apt-get update && \
         	DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk git
  
-         git clone --recursive https://gitlab.com/botts/osh-node-template
+         git clone --recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
          cd osh-node-template
         	docker build -t [repo]:[tag] . -f dockerfile
