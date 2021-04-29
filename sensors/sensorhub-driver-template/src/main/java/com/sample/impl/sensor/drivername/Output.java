@@ -14,7 +14,7 @@
 package com.sample.impl.sensor.drivername;
 
 import net.opengis.swe.v20.*;
-import org.sensorhub.api.sensor.SensorDataEvent;
+import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * Initializes the data structure for the output, defining the fields, their ordering,
      * and data types.
      */
-    void init() {
+    void doInit() {
 
         logger.debug("Initializing Output");
 
@@ -86,7 +86,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     /**
      * Begins processing data for output
      */
-    public void start() {
+    public void doStart() {
 
         logger.info("Starting worker thread: {}", worker.getName());
 
@@ -98,7 +98,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     /**
      * Terminates processing data for output
      */
-    public void stop() {
+    public void doStop() {
 
         synchronized (processingLock) {
 
@@ -186,7 +186,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
                 latestRecordTime = System.currentTimeMillis();
 
-                eventHandler.publishEvent(new SensorDataEvent(latestRecordTime, Output.this, dataBlock));
+                eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
 
                 synchronized (processingLock) {
 

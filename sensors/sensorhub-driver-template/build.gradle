@@ -18,10 +18,10 @@ test {
 }
 
 // add info to OSGi manifest
-jar {
+osgi {
     manifest {
-        instruction 'Bundle-Vendor', ''
-        instruction 'Bundle-Activator', 'com.sentinel.impl.sensor.video.smartcam.Activator'
+        attributes ('Bundle-Vendor': 'Botts Inc')
+        attributes ('Bundle-Activator': 'com.sample.impl.sensor.drivername.Activator')
     }
 }
 

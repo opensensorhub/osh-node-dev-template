@@ -11,13 +11,16 @@ subprojects {
 }
 
 dependencies {
-  compile 'org.sensorhub:sensorhub-core:' + oshCoreVersion
-  compile 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
-  compile 'org.sensorhub:sensorhub-storage-perst:' + oshCoreVersion
-  compile 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
-  compile project(':sensorhub-storage-h2')
-  compile project(':sensorhub-driver-videocam')
-  compile project(':sensorhub-service-video')
+  implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
+//  implementation 'org.sensorhub:sensorhub-storage-compat:' + oshCoreVersion
+//  implementation 'org.sensorhub:sensorhub-storage-perst:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-datastore-h2'
+//  implementation project(':sensorhub-storage-compat')
+//  implementation project(':sensorhub-storage-h2')
+//  implementation project(':sensorhub-driver-videocam')
+//  implementation project(':sensorhub-service-video')
 }
 
 // create one configuration for each distribution
@@ -36,7 +39,7 @@ distributions {
         from 'web'
       }
       into('lib') {
-        from project.configurations.compileClasspath
+        from project.configurations.runtimeClasspath
       }
       into('db'){
         from 'data_files'

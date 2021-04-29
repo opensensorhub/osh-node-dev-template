@@ -34,9 +34,9 @@ public class Sensor extends AbstractSensorModule<Config> {
     Object syncTimeLock = new Object();
 
     @Override
-    public void init() throws SensorHubException {
+    public void doInit() throws SensorHubException {
 
-        super.init();
+        super.doInit();
 
         // Generate identifiers
         generateUniqueID("[URN]", config.serialNumber);
@@ -47,29 +47,29 @@ public class Sensor extends AbstractSensorModule<Config> {
 
         addOutput(output, false);
 
-        output.init();
+        output.doInit();
 
         // TODO: Perform other initialization
     }
 
     @Override
-    public void start() throws SensorHubException {
+    public void doStart() throws SensorHubException {
 
         if (null != output) {
 
             // Allocate necessary resources and start outputs
-            output.start();
+            output.doStart();;
         }
 
         // TODO: Perform other startup procedures
     }
 
     @Override
-    public void stop() throws SensorHubException {
+    public void doStop() throws SensorHubException {
 
         if (null != output) {
 
-            output.stop();
+            output.doStop();
         }
 
         // TODO: Perform other shutdown procedures

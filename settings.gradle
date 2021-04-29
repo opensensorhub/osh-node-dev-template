@@ -1,27 +1,37 @@
-rootProject.name = 'osh-node'
+//rootProject.name = 'osh-node'
+//gradle.ext.oshCoreDir = "$rootDir/include/osh-core"
+//gradle.ext.oshAddonsDir = "$rootDir/include/osh-addons"
+//
+//includeBuild gradle.oshCoreDir
+////includeBuild gradle.oshAddonsDir
+//
+////include 'sensorhub-storage-h2'
+////project(':sensorhub-storage-h2').projectDir = "$gradle.oshAddonsDir/persistence/sensorhub-storage-h2" as File
+//
+////include 'sensorhub-driver-videocam'
+////project(':sensorhub-driver-videocam').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-driver-videocam" as File
+////
+////// osh-services
+////include 'sensorhub-service-video'
+////project(':sensorhub-service-video').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-service-video" as File
+//
+//// include all folders with build.gradle as subprojects
+//FileTree subprojects = fileTree("$rootDir/sensors").include('**/build.gradle')
+//subprojects.files.each { File f ->
+//    File projectFolder = f.parentFile
+//    if (projectFolder != rootDir) {
+//        String projectName = ':' + projectFolder.name
+//        include projectName
+//        project(projectName).projectDir = projectFolder
+//    }
+//}
+
+rootProject.name = 'osh-node-template'
+//def repoRootDir = "$rootDir/../.."
 gradle.ext.oshCoreDir = "$rootDir/include/osh-core"
-gradle.ext.oshAddonsDir = "$rootDir/include/osh-addons"
+
+if (!new File(gradle.oshCoreDir).exists())
+    throw new GradleException('Repository osh-core is missing. Please clone it from https://github.com/opensensorhub/osh-core')
 
 includeBuild gradle.oshCoreDir
-//includeBuild gradle.oshAddonsDir
-
-include 'sensorhub-storage-h2'
-project(':sensorhub-storage-h2').projectDir = "$gradle.oshAddonsDir/persistence/sensorhub-storage-h2" as File
-
-include 'sensorhub-driver-videocam'
-project(':sensorhub-driver-videocam').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-driver-videocam" as File
-
-// osh-services
-include 'sensorhub-service-video'
-project(':sensorhub-service-video').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-service-video" as File
-
-// include all folders with build.gradle as subprojects
-FileTree subprojects = fileTree("$rootDir/sensors").include('**/build.gradle')
-subprojects.files.each { File f ->
-    File projectFolder = f.parentFile
-    if (projectFolder != rootDir) {
-        String projectName = ':' + projectFolder.name
-        include projectName
-        project(projectName).projectDir = projectFolder
-    }
-}
+includeBuild rootDir
