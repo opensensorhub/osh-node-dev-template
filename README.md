@@ -11,7 +11,7 @@ https://github.com/opensensorhub/osh-node-dev-template.git
 #### Synopsis
 The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command
  
-         git clone –recursive https://github.com/opensensorhub/osh-node-dev-template.git
+         git clone -–recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
 Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
  
