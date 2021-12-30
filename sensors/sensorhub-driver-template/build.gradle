@@ -3,9 +3,9 @@ ext.details = "Details here"
 version = '1.0.0'
 
 dependencies {
-    compile 'org.sensorhub:sensorhub-core:' + oshCoreVersion
-//    compile project(':sensorhub-service-video')
-//    compile project(':sensorhub-driver-videocam')
+    implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+//    implementation project(':sensorhub-service-video')
+//    implementation project(':sensorhub-driver-videocam')
     testImplementation('junit:junit:4.13')
 }
 
