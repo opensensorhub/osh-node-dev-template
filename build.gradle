@@ -26,6 +26,9 @@ dependencies {
 //  implementation project(':sensorhub-storage-h2')
 //  implementation project(':sensorhub-service-video')
 //  implementation project(':sensorhub-driver-videocam')
+
+
+  implementation project(':sensorhub-tools')
 }
 
 // create one configuration for each distribution
@@ -47,6 +50,9 @@ distributions {
       }
       into('db'){
         from 'data_files'
+      }
+      subprojects.each { p ->
+        from("${p.projectDir}/scripts")
       }
     }
   }

@@ -52,3 +52,6 @@ includeBuild gradle.oshCoreDir
 //        project(projectName).projectDir = projectFolder
 //    }
 //}
+
+include 'sensorhub-tools'
+project(':sensorhub-tools').projectDir = "$rootDir/sensorhub-tools" as File

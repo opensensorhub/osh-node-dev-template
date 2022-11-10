@@ -1,0 +1,27 @@
+description = 'OSH CLI Admin Tools'
+ext.details = 'Command-line administration tools for OSH'
+
+dependencies {
+  implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-datastore-h2'
+}
+
+// add info to OSGI manifest
+jar {
+  manifest {
+    attributes 'Bundle-Vendor': 'Sensia Software LLC'
+    attributes 'Bundle-Activator': 'org.sensorhub.tools.Activator'
+  }
+}
+
+// add info to maven pom
+ext.pom >>= {
+  developers {
+    developer {
+      id 'alexrobin'
+      name 'Alex Robin'
+      organization 'Sensia Software LLC'
+      organizationUrl 'http://www.sensiasoftware.com' 
+    }
+  } 
+}
