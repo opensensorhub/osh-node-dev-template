@@ -1,12 +1,10 @@
 ## OpenSensorHub Build and Deployment
-
  
 ### Repositories
 
 osh-node-dev-template
 
 https://github.com/opensensorhub/osh-node-dev-template.git
-
  
 #### Synopsis
 The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command
@@ -14,8 +12,6 @@ The current “node” template source code of OpenSensorHub is located at GitLa
          git clone -–recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
 Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
- 
-
  
 ### Building and Deploying the Node
 
@@ -27,16 +23,26 @@ Building the Node with Jetty deployable web server from the command line is as s
          cd osh-node-template
          ./gradlew build -x test
  
+The **-x test** excludes unit tests from execution during build 
+
 The resulting build will be contained in /osh-node-template/build/distributions/osh-node-*.*.*.zip
  
 Deploying is as simple as copying the zip file to the target destination and unzipping the file.  You can then run ./launch.sh in Linux or ./launch.bat in Windows environment to startup OpenSensorHub.
+
+##### Non-OSGi Builds
+
+By default, since V2.0 of OpenSensorHub, packages will be built supporting OSGi bundles.  If the desire is to build a non-OSGi version of the software modify the build command as follows
+
+         ./gradlew build -x test -x osgi
+
+The **-x osgi** excludes building OSGi bundles
 
 #### Docker
 
 Building a docker image is equally as simple and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
  
          apt-get update && \
-        	DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk git
+        	DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-11-jdk git
  
          git clone --recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
