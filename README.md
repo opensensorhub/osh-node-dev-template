@@ -39,7 +39,7 @@ The **-x osgi** excludes building OSGi bundles
 
 #### Docker
 
-Building a docker image is equally as simple and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
+Building a docker image is equally simple and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
  
          apt-get update && \
         	DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-11-jdk git
