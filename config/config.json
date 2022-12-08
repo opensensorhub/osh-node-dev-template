@@ -3,10 +3,12 @@
     "objClass": "org.sensorhub.impl.service.HttpServerConfig",
     "httpPort": 8181,
     "httpsPort": 0,
-    "staticDocRootUrl": "web",
+    "staticDocsRootUrl": "/",
+    "staticDocsRootDir": "web",
     "servletsRootUrl": "/sensorhub",
     "authMethod": "BASIC",
     "keyStorePath": ".keystore/ssl_keys",
+    "keyAlias": "jetty",
     "trustStorePath": ".keystore/ssl_trust",
     "enableCORS": true,
     "id": "5cb05c9c-9e08-4fa1-8731-ffaa5846bdc1",
@@ -24,7 +26,9 @@
         "password": "admin",
         "roles": [
           "admin"
-        ]
+        ],
+        "allow": [],
+        "deny": []
       },
       {
         "objClass": "org.sensorhub.impl.security.BasicSecurityRealmConfig$UserConfig",
@@ -33,7 +37,9 @@
         "password": "",
         "roles": [
           "anon"
-        ]
+        ],
+        "allow": [],
+        "deny": []
       },
       {
         "objClass": "org.sensorhub.impl.security.BasicSecurityRealmConfig$UserConfig",
@@ -42,7 +48,9 @@
         "password": "pwd",
         "roles": [
           "sost"
-        ]
+        ],
+        "allow": [],
+        "deny": []
       }
     ],
     "roles": [
@@ -81,6 +89,7 @@
   {
     "objClass": "org.sensorhub.ui.AdminUIConfig",
     "widgetSet": "org.sensorhub.ui.SensorHubWidgetSet",
+    "bundleRepoUrls": [],
     "customPanels": [],
     "customForms": [],
     "id": "5cb05c9c-9123-4fa1-8731-ffaa51489678",
@@ -90,11 +99,7 @@
   },
   {
     "objClass": "org.sensorhub.impl.service.sos.SOSServiceConfig",
-    "enableTransactional": true,
-    "maxObsCount": 100,
-    "maxRecordCount": 100000,
-    "dataProviders": [],
-    "dataConsumers": [],
+    "customDataProviders": [],
     "customFormats": [
       {
         "objClass": "org.sensorhub.impl.service.sos.SOSCustomFormatConfig",
@@ -107,11 +112,17 @@
         "className": "org.sensorhub.impl.service.sos.video.MJPEGSerializer"
       }
     ],
+    "maxObsCount": 100,
+    "maxRecordCount": 100000,
+    "maxFois": 10,
+    "defaultLiveTimeout": 10.0,
+    "templateTimeout": 600,
     "security": {
       "objClass": "org.sensorhub.api.security.SecurityConfig",
       "enableAccessControl": true,
       "requireAuth": false
     },
+    "enableTransactional": true,
     "ogcCapabilitiesInfo": {
       "objClass": "org.sensorhub.impl.service.ogc.OGCServiceConfig$CapabilitiesInfo",
       "title": "SOS Service",
@@ -154,6 +165,81 @@
     "id": "5cb05c9c-9e08-4fa1-8731-ff41e246bdc1",
     "moduleClass": "org.sensorhub.impl.service.sos.SOSService",
     "name": "SOS Service",
+    "autoStart": true
+  },
+  {
+    "objClass": "com.botts.impl.service.discovery.DiscoveryServiceConfig",
+    "security": {
+      "objClass": "org.sensorhub.api.security.SecurityConfig",
+      "enableAccessControl": false,
+      "requireAuth": true
+    },
+    "rulesFilePath": "./rules/rules.txt",
+    "endPoint": "/discovery",
+    "id": "7edef64f-55e3-45ac-8a32-de913ff37ce5",
+    "moduleClass": "com.botts.impl.service.discovery.DiscoveryService",
+    "name": "Discovery Service",
+    "description": "Service providing discovery based on defineable rulesets",
+    "autoStart": true
+  },
+  {
+    "objClass": "org.sensorhub.impl.service.sweapi.SWEApiServiceConfig",
+    "databaseID": "aa7a4b3c-c5db-4119-9422-6fc0a05ce7c1",
+    "customFormats": [],
+    "security": {
+      "objClass": "org.sensorhub.api.security.SecurityConfig",
+      "enableAccessControl": false,
+      "requireAuth": true
+    },
+    "enableTransactional": false,
+    "maxResponseLimit": 100000,
+    "defaultLiveTimeout": 600.0,
+    "ogcCapabilitiesInfo": {
+      "objClass": "org.sensorhub.impl.service.ogc.OGCServiceConfig$CapabilitiesInfo",
+      "serviceProvider": {
+        "objClass": "org.vast.util.ResponsibleParty",
+        "voiceNumbers": [],
+        "faxNumbers": [],
+        "deliveryPoints": [],
+        "emails": [],
+        "hrefPresent": false
+      }
+    },
+    "enableHttpGET": true,
+    "enableHttpPOST": true,
+    "enableSOAP": true,
+    "endPoint": "/api",
+    "id": "a8009d0a-294d-47a5-88fb-6df304f62c5a",
+    "moduleClass": "org.sensorhub.impl.service.sweapi.SWEApiService",
+    "name": "SensorWeb API Service",
+    "autoStart": true
+  },
+  {
+    "objClass": "org.sensorhub.impl.database.system.SystemDriverDatabaseConfig",
+    "dbConfig": {
+      "objClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabaseConfig",
+      "indexObsLocation": false,
+      "storagePath": "./db/db.dat",
+      "memoryCacheSize": 5120,
+      "autoCommitBufferSize": 1024,
+      "autoCommitPeriod": 10,
+      "idProviderType": "SEQUENTIAL",
+      "useCompression": false,
+      "readOnly": false,
+      "compactOnClose": false,
+      "databaseNum": 1,
+      "moduleClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabase",
+      "name": "Backing Store",
+      "description": "Implementation of backing store for System Driver Database",
+      "autoStart": false
+    },
+    "systemUIDs": [],
+    "minCommitPeriod": 10000,
+    "databaseNum": 1,
+    "id": "aa7a4b3c-c5db-4119-9422-6fc0a05ce7c1",
+    "moduleClass": "org.sensorhub.impl.database.system.SystemDriverDatabase",
+    "name": "System Driver Database",
+    "description": "Storage Module for Selected Systems by UID",
     "autoStart": true
   }
 ]

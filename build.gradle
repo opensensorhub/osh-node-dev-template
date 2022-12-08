@@ -2,7 +2,7 @@ apply from: gradle.oshCoreDir + '/common.gradle'
 description = ''
 
 allprojects {
-  version = '0.0.1'
+  version = '0.0.0'
 }
 
 subprojects {
@@ -15,6 +15,8 @@ dependencies {
   implementation 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-datastore-h2'
+  implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
+
 
 //  implementation project(':[storage-module-name]')
 //  implementation project(':[service-name]')
@@ -39,11 +41,15 @@ distributions {
       from 'scripts'
       from 'config'
       from 'README.md'
+      into('rules') {
+        from 'rules'
+      }
       into('web') {
         from 'web'
       }
       into('lib') {
         from project.configurations.runtimeClasspath
+        from 'thirdparty'
       }
       into('db'){
         from 'data_files'

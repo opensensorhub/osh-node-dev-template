@@ -1,0 +1,16 @@
+# -----------------------------------------------------------------------------------------------------------------------------
+# COMMON RULES
+#
+# -----------------------------------------------------------------------------------------------------------------------------
+
+# This rule describes getting sensor locations without orientation
+location http://sensorml.com/ont/swe/property/Location OR http://www.opengis.net/def/property/OGC/0/PlatformLocation
+
+# This rule describes getting sensor orientations (e.g. UAS Orientation as a sensor platform)
+orientation http://sensorml.com/ont/swe/property/OrientationQuaternion OR http://www.opengis.net/def/property/OGC/0/PlatformOrientation
+
+# This rule describes getting video streams
+video http://sensorml.com/ont/swe/property/VideoFrame
+
+# This rule describes getting sensor orientations of its gimbal (e.g. UAS Orientation as a sensor platform)
+gimbal http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation
