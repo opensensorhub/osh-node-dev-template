@@ -168,21 +168,6 @@
     "autoStart": true
   },
   {
-    "objClass": "com.botts.impl.service.discovery.DiscoveryServiceConfig",
-    "security": {
-      "objClass": "org.sensorhub.api.security.SecurityConfig",
-      "enableAccessControl": false,
-      "requireAuth": true
-    },
-    "rulesFilePath": "./rules/rules.txt",
-    "endPoint": "/discovery",
-    "id": "7edef64f-55e3-45ac-8a32-de913ff37ce5",
-    "moduleClass": "com.botts.impl.service.discovery.DiscoveryService",
-    "name": "Discovery Service",
-    "description": "Service providing discovery based on defineable rulesets",
-    "autoStart": true
-  },
-  {
     "objClass": "org.sensorhub.impl.service.sweapi.SWEApiServiceConfig",
     "databaseID": "aa7a4b3c-c5db-4119-9422-6fc0a05ce7c1",
     "customFormats": [],

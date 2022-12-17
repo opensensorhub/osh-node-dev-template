@@ -41,15 +41,11 @@ distributions {
       from 'scripts'
       from 'config'
       from 'README.md'
-      into('rules') {
-        from 'rules'
-      }
       into('web') {
         from 'web'
       }
       into('lib') {
         from project.configurations.runtimeClasspath
-        from 'thirdparty'
       }
       into('db'){
         from 'data_files'
