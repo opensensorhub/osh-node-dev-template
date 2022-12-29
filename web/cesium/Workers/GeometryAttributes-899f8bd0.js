@@ -1,0 +1,2 @@
+/*! For license information please see GeometryAttributes-899f8bd0.js.LICENSE.txt */
+define(["exports","./defaultValue-135942ca"],(function(t,e){"use strict";t.GeometryAttributes=function(t){t=e.defaultValue(t,e.defaultValue.EMPTY_OBJECT),this.position=t.position,this.normal=t.normal,this.st=t.st,this.bitangent=t.bitangent,this.tangent=t.tangent,this.color=t.color}}));
