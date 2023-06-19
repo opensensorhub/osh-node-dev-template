@@ -39,6 +39,9 @@ includeBuild gradle.oshCoreDir
 //include 'sensorhub-driver-videocam'
 //project(':sensorhub-driver-videocam').projectDir = "$sensorDir/video/sensorhub-driver-videocam" as File
 
+include 'sensorhub-driver-mavlink'
+project(':sensorhub-driver-mavlink').projectDir = "$sensorDir/robotics/sensorhub-driver-mavlink" as File
+
 // Project modules
 
 // Include all folders with build.gradle as subprojects
