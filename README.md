@@ -33,7 +33,7 @@ Deploying is as simple as copying the zip file to the target destination and unz
 Building a docker image is equally simple and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
 
 The docker file was originally intended to be used within the context of Jenkins build, and as such it already is configured to run out of the box.
-However, building outside of Jenkins requires the addition of the __-build-arg version=[VERSION]__ switch as shown below
+However, building outside of Jenkins requires the addition of the __--build-arg version=[VERSION]__ switch as shown below
 and the command to be executed from within the osh-node-dev-template directory after building with gradle.
 
 
@@ -44,7 +44,7 @@ and the command to be executed from within the osh-node-dev-template directory a
  
          cd osh-node-dev-template
          ./gradlew build -x test
-         docker build -t [repo]:[tag] . -f dockerfile -build-arg version=[OSH-VERSION-FROM-build.gradle]
+         docker build -t [repo]:[tag] . -f dockerfile --build-arg version=[OSH-VERSION-FROM-build.gradle]
 
 #### Understanding Docker Commands
 
