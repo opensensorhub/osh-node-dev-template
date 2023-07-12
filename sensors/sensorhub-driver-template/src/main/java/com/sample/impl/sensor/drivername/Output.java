@@ -49,7 +49,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
     private final Object histogramLock = new Object();
 
-    Thread worker;
+    private Thread worker;
 
     /**
      * Constructor
@@ -78,8 +78,6 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
 
-        worker = new Thread(this, this.name);
-
         logger.debug("Initializing Output Complete");
     }
 
@@ -90,8 +88,12 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
         logger.info("Starting worker thread: {}", worker.getName());
 
+        // Instantiate a new worker thread
+        worker = new Thread(this, this.name);
+
         // TODO: Perform other startup
 
+        // Start the worker thread
         worker.start();
     }
 
@@ -201,6 +203,10 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
             logger.error("Error in worker thread: {} due to exception: {}", Thread.currentThread().getName(), stringWriter.toString());
 
         } finally {
+
+            // Reset the flag so that when driver is restarted loop thread continues
+            // until doStop called ou output again
+            stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
         }
