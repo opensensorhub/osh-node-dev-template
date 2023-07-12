@@ -1,5 +1,4 @@
 ## OpenSensorHub Build and Deployment
-
  
 ### Repositories
 
@@ -13,9 +12,7 @@ The current “node” template source code of OpenSensorHub is located at GitLa
  
          git clone -–recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
-Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
- 
-
+Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-dev-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
  
 ### Building and Deploying the Node
 
@@ -45,8 +42,9 @@ and the command to be executed from within the osh-node-dev-template directory a
  
          git clone --recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
-         cd osh-node-template
-        	docker build -t [repo]:[tag] . -f dockerfile -build-arg version=[OSH-VERSION-FROM-build.gradle]
+         cd osh-node-dev-template
+         ./gradlew build -x test
+         docker build -t [repo]:[tag] . -f dockerfile -build-arg version=[OSH-VERSION-FROM-build.gradle]
 
 #### Understanding Docker Commands
 
@@ -227,15 +225,9 @@ Within the home directory of the user created in the previous step create a subd
     cd ~/osh
     mkdir osh_config
 
-###### Unzip Contents of BaseConfig.zip
+###### Default OSH Configuration
 
-Extract the ***BaseConfig.zip*** to osh user home directory
-
-    unzip BaseConfig.zip -d /home/osh/osh_config
-
-    chown -R osh:osh /home/osh/osh_config
-
-With the deployment package, there is a ***BaseConfig.zip*** file containing a default configuration of
+With the deployment package, there is a ***config.json*** file containing a default configuration of
 OpenSensorHub.  Within this configuration only default users and services are configured.
 The default administrative credentials are
 
