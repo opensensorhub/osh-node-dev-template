@@ -16,7 +16,7 @@ dependencies {
   implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-datastore-h2'
   implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
-
+  implementation project(':sensorhub-driver-template')
 
 //  implementation project(':[storage-module-name]')
 //  implementation project(':[service-name]')

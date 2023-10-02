@@ -13,22 +13,21 @@
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
-import net.opengis.swe.v20.*;
+import net.opengis.swe.v20.DataBlock;
+import net.opengis.swe.v20.DataComponent;
+import net.opengis.swe.v20.DataEncoding;
+import net.opengis.swe.v20.DataRecord;
 import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.swe.helper.GeoPosHelper;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.Boolean;
-
 /**
- * Output specification and provider for ...
+ * Output specification and provider for {@link Sensor}.
  *
- * @author Nick Garay
- * @since Feb. 6, 2020
+ * @author your_name
+ * @since date
  */
 public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
@@ -213,9 +212,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
         } catch (Exception e) {
 
-            StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
-            logger.error("Error in worker thread: {} due to exception: {}", Thread.currentThread().getName(), stringWriter);
+            logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
 
         } finally {
 

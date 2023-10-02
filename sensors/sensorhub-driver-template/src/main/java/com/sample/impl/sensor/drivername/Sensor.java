@@ -19,19 +19,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver for the ... providing sensor description, output registration,
- * initialization and shutdown of driver and outputs.
+ * Sensor driver providing sensor description, output registration, initialization and shutdown of driver and outputs.
  *
- * @author Nick Garay
- * @since Feb. 6, 2020
+ * @author your_name
+ * @since date
  */
 public class Sensor extends AbstractSensorModule<Config> {
 
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
     Output output;
-
-    Object syncTimeLock = new Object();
 
     @Override
     public void doInit() throws SensorHubException {
@@ -58,7 +55,7 @@ public class Sensor extends AbstractSensorModule<Config> {
         if (null != output) {
 
             // Allocate necessary resources and start outputs
-            output.doStart();;
+            output.doStart();
         }
 
         // TODO: Perform other startup procedures
