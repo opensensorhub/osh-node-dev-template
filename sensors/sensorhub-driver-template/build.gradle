@@ -6,7 +6,7 @@ dependencies {
     implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
 //    implementation project(':sensorhub-service-video')
 //    implementation project(':sensorhub-driver-videocam')
-    testImplementation('junit:junit:4.13')
+    testImplementation('junit:junit:4.13.1')
 }
 
 // exclude tests requiring connection to the sensor

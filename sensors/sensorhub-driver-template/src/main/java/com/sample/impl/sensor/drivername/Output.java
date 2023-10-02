@@ -75,6 +75,17 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         GeoPosHelper sweFactory = new GeoPosHelper();
 
         // TODO: Create data record description
+        dataStruct = sweFactory.createRecord()
+                .name(SENSOR_OUTPUT_NAME)
+                .label(SENSOR_OUTPUT_LABEL)
+                .description(SENSOR_OUTPUT_DESCRIPTION)
+                .addField("sampleTime", sweFactory.createTime()
+                        .asSamplingTimeIsoUTC()
+                        .label("Sample Time")
+                        .description("Time of data collection"))
+                .addField("data", sweFactory.createText()
+                        .label("Example Data"))
+                .build();
 
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
 
@@ -86,12 +97,12 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      */
     public void doStart() {
 
-        logger.info("Starting worker thread: {}", worker.getName());
-
         // Instantiate a new worker thread
         worker = new Thread(this, this.name);
 
         // TODO: Perform other startup
+
+        logger.info("Starting worker thread: {}", worker.getName());
 
         // Start the worker thread
         worker.start();
@@ -182,7 +193,11 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
                 ++setCount;
 
+                double timestamp = System.currentTimeMillis() / 1000d;
+
                 // TODO: Populate data block
+                dataBlock.setDoubleValue(0, timestamp);
+                dataBlock.setStringValue(1, "Your data here");
 
                 latestRecord = dataBlock;
 
@@ -200,12 +215,12 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
-            logger.error("Error in worker thread: {} due to exception: {}", Thread.currentThread().getName(), stringWriter.toString());
+            logger.error("Error in worker thread: {} due to exception: {}", Thread.currentThread().getName(), stringWriter);
 
         } finally {
 
             // Reset the flag so that when driver is restarted loop thread continues
-            // until doStop called ou output again
+            // until doStop called on the output again
             stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
