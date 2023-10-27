@@ -1,4 +1,5 @@
 ## OpenSensorHub Build and Deployment
+[![OpenSensorHub Discord](https://user-images.githubusercontent.com/7288322/34429117-c74dbd12-ecb8-11e7-896d-46369cd0de5b.png)](https://discord.gg/6k3QYRSh9F)
  
 ### Repositories
 
@@ -8,11 +9,11 @@ https://github.com/opensensorhub/osh-node-dev-template.git
 
  
 #### Synopsis
-The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command
+The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source code necessary to build a new OSH node, driver, processes, and libraries, but they also make use of the OpenSensorHub open source core and addons.  These open source technologies are referred to by the respective repositories they are employed in as "submodules." Therefore, it is important to note that when using git commands to “checkout” any one of these repositories, you do so with the following command:
  
          git clone -–recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
-Each can be built and deployed individually and manually or can be built and deployed as a single package using the Jenkinsfile and/or docker file(s) in the osh-node-dev-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
+Each can be built and deployed individually and manually, or it can be built and deployed as a single package using the Jenkinsfile and/or Docker file(s) in the osh-node-dev-template repo.  Using the Jenkinsfile will require modifications necessary for your particular environment, such as git repos, credentials, docker image repositories, etc.  Review the Jenkinsfile and dockerfile and update as necessary.
  
 ### Building and Deploying the Node
 
@@ -30,11 +31,11 @@ Deploying is as simple as copying the zip file to the target destination and unz
 
 #### Docker
 
-Building a docker image is equally simple and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
+Building a Docker image is equally simple, and the resulting image will deploy the Node with Jetty using NginX as a reverse proxy for network routing and connectivity.
 
-The docker file was originally intended to be used within the context of Jenkins build, and as such it already is configured to run out of the box.
+The Docker file was originally intended to be used within the context of Jenkins builds, and as such, it is already configured to run out of the box.
 However, building outside of Jenkins requires the addition of the __--build-arg version=[VERSION]__ switch as shown below
-and the command to be executed from within the osh-node-dev-template directory after building with gradle.
+and the command to be executed from within the osh-node-dev-template directory after building with Gradle.
 
 
          apt-get update && \
@@ -50,34 +51,34 @@ and the command to be executed from within the osh-node-dev-template directory a
 
 It is highly recommended that the user be or become familiar with docker and the following commands
 
-●     To run docker image detached exposing ports
+●     To run Docker image detached exposing ports
 
          sudo docker run -d -p443:443 [repo]:[tag or image id]
 
 - ***-p port_visible_to_world:port_exposed_docker_container***:
     - Expose additional ports by including more -p switches, one for each port to be mapped
 
-●     To list docker images:
+●     To list Docker images:
 
          sudo docker images
 
-●     To see which docker image is/are running:
+●     To see which Docker image is/are running:
 
          sudo docker ps
 
-●     To see which docker all docker images running or stopped:
+●     To see which Docker all Docker images running or stopped:
 
          sudo docker ps -a
 
-●     To kill a docker image:
+●     To kill a Docker image:
 
          sudo docker kill <container id>
 
-●     To gracefully start a stopped a docker image:
+●     To gracefully start a stopped a Docker image:
 
          sudo docker start <container id | friendly name>
 
-●     To gracefully stop a docker image:
+●     To gracefully stop a Docker image:
 
          sudo docker stop <container id | friendly name>
 
@@ -97,7 +98,7 @@ It is highly recommended that the user be or become familiar with docker and the
 
 ●     To run docker image detached with mounted file system & name, using present working directory for filesystem source
 
-**_Important_**  - make sure to create **_osh user_** and **_group_** on the host system for the volume to be mounted and set owner
+**_Important_**: Make sure to create **_osh user_** and **_group_** on the host system for the volume to be mounted and set owner
 and group to **_osh:osh_** for the volume being mounted
 
 
@@ -111,12 +112,12 @@ and group to **_osh:osh_** for the volume being mounted
 - **container-friendly-name**: a friendly name for the docker container
 - **mount-path**: the absolute path to the directory to be mounted as a volume
 - **osh-node-path**: the absolute path to the directory where OpenSensorHub lives within the container
-- **target-dir**: the name of the directory the source should be mounted within the target
+- **target-dir**: the name of the directory where the source should be mounted within the target
 
 It is recommended to start the image using the following command if you want to mount a host filesystem path
-directory where data is typically stored in osh making this data accessible outside the docker instance and
+directory where data is typically stored in OSH, making this data accessible outside the docker instance and
 persisting across executions of the instance.  The config.json can be stored in this path to persist configuration.
-The launch script needs to be updated, if doing this so that config.json and db are correctly referenced.
+The launch script needs to be updated, if doing this, so that config.json and db are correctly referenced.
 
 
          docker run -d -p 443:443 -p80:80 \
@@ -129,8 +130,8 @@ The launch script needs to be updated, if doing this so that config.json and db 
 - **osh-node-path**: the absolute path to the directory where OpenSensorHub lives within the container
 - **target-dir**: in this example it has been set to **_data_** and will contain the config and recorded data
 
-If using mounted volumes and configuration file (config.json) is hosted on mounted volume then change launch.[sh | bat]
-to point to the correct path for the mounted volumes.  Similarly, if data is to be stored external to the container update
+If using mounted volumes and the configuration file (config.json) is hosted on the mounted volume, then change the launch.[sh | bat]
+to point to the correct path for the mounted volumes.  Similarly, if data is to be stored externally to the container, update
 path to location for database files
 
          java -Xmx2g -Dlogback.configurationFile=./logback.xml -cp "lib/*" \
@@ -142,20 +143,19 @@ path to location for database files
 ***
 # Adding Additional Inbound Streams to NGINX and Docker
 Sometimes it may be necessary to support services that establish TCP connections with OpenSensorHub.  In such instances,
-if deploying OpenSensorHub in a containerized environment modifications need to be made to NGINX and Dockerfile.
+if deploying OpenSensorHub in a containerized environment, modifications need to be made to NGINX and the Dockerfile.
 
 ## Modifying Dockerfile
-Dockerfile will need to be updated with the port or ports to expose.
+The Dockerfile will need to be updated with the port or ports to expose.
 
 `EXPOSE 80 443 8500`
 
-Find the above line and add the port numbers to be exposed.  Make sure that when deploying the container the internal
+Find the above line and add the port numbers to be exposed.  Make sure that when deploying the container, the internal
 target ports are mapped to the externally available ports.  See examples above in **Docker** section
 
 ## Modifying NGINX Configuration
 The _nginx.conf_ file needs to be updated to provide a new **stream** configuration block or entry.
-The file can be found in the ./container directory and currently contains the following
-stream configuration:
+The file can be found in the ./container directory and currently contains the following stream configuration:
 
 ```
 stream {
@@ -205,7 +205,7 @@ based service.
 
 ### Necessary Configuration to Support External Volumes
 
-The instructions in this section pertain to the cloud based instance hosting the storage volumes
+The instructions in this section pertain to the cloud-based instance hosting the storage volumes
 
 #### Fresh Install
 
@@ -213,14 +213,14 @@ The following procedures should be followed for a ***_fresh install_*** of OpenS
 
 ###### Ensure the configuration of a user and group
 
-The following commands add a group with group id ***osh*** and a user with id ***osh***
+The following commands add a group with group ID ***osh*** and a user with ID ***osh***
 
      groupadd -g 4242 osh
      useradd -g osh -u 4242 -m -r -s /bin/false/ osh
 
 ###### Create Directory for Mapping to Container
 
-Within the home directory of the user created in the previous step create a subdirectory by executing
+Within the home directory of the user created in the previous step, create a subdirectory by executing
 
     cd ~/osh
     mkdir osh_config
@@ -228,13 +228,13 @@ Within the home directory of the user created in the previous step create a subd
 ###### Default OSH Configuration
 
 With the deployment package, there is a ***config.json*** file containing a default configuration of
-OpenSensorHub.  Within this configuration only default users and services are configured.
+OpenSensorHub.  Within this configuration, only default users and services are configured.
 The default administrative credentials are
 
     uname: admin
     password: admin
 
-The default url to access admin panel is:
+The default URL to access the admin panel is:
 
     https://<address>/sensorhub/admin
 
@@ -253,26 +253,26 @@ Ensure that ***osh*** group and ***osh*** user exist
 
 Both user and group ids should be 4242
 
-If not then the following commands add a group with group id ***osh*** and a user with id ***osh***
+If not, then the following commands add a group with group ID ***osh*** and a user with ID ***osh***
 
      groupadd -g 4242 osh
      useradd -g osh -u 4242 -r -s /bin/false/ osh
 
-If user and group id exist ensure they use correct id's
+If user and group IDs exist, ensure they use correct IDs.
 
      groupmod -g 4242 osh
      usermod -u 4242 osh
 
 ###### Ensure directory for mapping to container exists
 
-Within the home directory of the ***osh*** user a directory exists
+Within the home directory of the ***osh*** user, a directory exists
 
     ls ~/osh/osh_config
 
 **_Important_**: Do not delete the contents of the directory
 
-Back up the contents of the directory.  
-You can create a new split Zip file using the -s option followed by a specified size. The multiplier
+Back up the contents of the directory.
+You can create a new split Zip file using the -s option, followed by a specified size. The multiplier
 can be k (kilobytes), m (megabytes), g (gigabytes), or t (terabytes).
 
     zip -s 1g -r <archivename>.zip <directory_name>
@@ -287,7 +287,7 @@ The command above will keep creating new archives in a set after it reaches the 
 
 ## Execute the Container
 
-In this section the commands to load and execute the container are provided.  It is important to note
+In this section, the commands to load and execute the container are provided.  It is important to note
 the version number of the OpenSensorHub installation and use it when specifying the target for the mounted
 volumes.
 
@@ -304,7 +304,7 @@ volumes.
 
 ## Viewing and Harvesting Log Files
 
-General log file is accessible through the external volumes at
+The general log file is accessible through the external volumes at
 
     /home/osh/osh_config/.moduledata/log.txt
 
