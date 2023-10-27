@@ -1,5 +1,5 @@
 ## OpenSensorHub Build and Deployment
-
+[![OpenSensorHub Discord](https://user-images.githubusercontent.com/7288322/34429117-c74dbd12-ecb8-11e7-896d-46369cd0de5b.png)](https://discord.gg/6k3QYRSh9F)
  
 ### Repositories
 
@@ -9,7 +9,7 @@ https://github.com/opensensorhub/osh-node-dev-template.git
 
  
 #### Synopsis
-The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command
+The current “node” template source code of OpenSensorHub is located at GitLab.  The repositories contain the source necessary to build a new OSH node, driver, processes, libraries, but also make use of OpenSensorHub open source core and addon.  These open source technologies are referred to by the respective repositories they are employed in as “submodules”  therefore it is important to note than when using git commands to “checkout” any one of these repositories that you do so with the following command:
  
          git clone –recursive https://github.com/opensensorhub/osh-node-dev-template.git
  
