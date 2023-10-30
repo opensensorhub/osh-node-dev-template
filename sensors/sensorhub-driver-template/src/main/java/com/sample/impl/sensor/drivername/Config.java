@@ -17,19 +17,19 @@ import org.sensorhub.api.config.DisplayInfo;
 import org.sensorhub.api.sensor.SensorConfig;
 
 /**
- * Configuration settings for the [NAME] driver exposed via the OpenSensorHub Admin panel.
- *
+ * Configuration settings for the {@link Sensor} driver exposed via the OpenSensorHub Admin panel.
+ * <p>
  * Configuration settings take the form of
  * <code>
- *     DisplayInfo(desc="Description of configuration field to show in UI")
- *     public Type configOption;
+ * DisplayInfo(desc="Description of configuration field to show in UI")
+ * public Type configOption;
  * </code>
- *
+ * <p>
  * Containing an annotation describing the setting and if applicable its range of values
  * as well as a public access variable of the given Type
  *
- * @author Nick Garay
- * @since Feb. 6, 2020
+ * @author your_name
+ * @since date
  */
 public class Config extends SensorConfig {
 
@@ -37,6 +37,6 @@ public class Config extends SensorConfig {
      * The unique identifier for the configured sensor (or sensor platform).
      */
     @DisplayInfo.Required
-    @DisplayInfo(desc="Serial number or unique identifier")
+    @DisplayInfo(desc = "Serial number or unique identifier")
     public String serialNumber = "sensor001";
 }

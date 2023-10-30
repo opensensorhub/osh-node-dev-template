@@ -13,22 +13,21 @@
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
-import net.opengis.swe.v20.*;
-import org.sensorhub.api.sensor.SensorDataEvent;
+import net.opengis.swe.v20.DataBlock;
+import net.opengis.swe.v20.DataComponent;
+import net.opengis.swe.v20.DataEncoding;
+import net.opengis.swe.v20.DataRecord;
+import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.swe.helper.GeoPosHelper;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.Boolean;
-
 /**
- * Output specification and provider for ...
+ * Output specification and provider for {@link Sensor}.
  *
- * @author Nick Garay
- * @since Feb. 6, 2020
+ * @author your_name
+ * @since date
  */
 public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
@@ -49,7 +48,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
     private final Object histogramLock = new Object();
 
-    Thread worker;
+    private Thread worker;
 
     /**
      * Constructor
@@ -67,7 +66,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * Initializes the data structure for the output, defining the fields, their ordering,
      * and data types.
      */
-    void init() {
+    void doInit() {
 
         logger.debug("Initializing Output");
 
@@ -75,10 +74,19 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         GeoPosHelper sweFactory = new GeoPosHelper();
 
         // TODO: Create data record description
+        dataStruct = sweFactory.createRecord()
+                .name(SENSOR_OUTPUT_NAME)
+                .label(SENSOR_OUTPUT_LABEL)
+                .description(SENSOR_OUTPUT_DESCRIPTION)
+                .addField("sampleTime", sweFactory.createTime()
+                        .asSamplingTimeIsoUTC()
+                        .label("Sample Time")
+                        .description("Time of data collection"))
+                .addField("data", sweFactory.createText()
+                        .label("Example Data"))
+                .build();
 
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
-
-        worker = new Thread(this, this.name);
 
         logger.debug("Initializing Output Complete");
     }
@@ -86,19 +94,23 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     /**
      * Begins processing data for output
      */
-    public void start() {
+    public void doStart() {
 
-        logger.info("Starting worker thread: {}", worker.getName());
+        // Instantiate a new worker thread
+        worker = new Thread(this, this.name);
 
         // TODO: Perform other startup
 
+        logger.info("Starting worker thread: {}", worker.getName());
+
+        // Start the worker thread
         worker.start();
     }
 
     /**
      * Terminates processing data for output
      */
-    public void stop() {
+    public void doStop() {
 
         synchronized (processingLock) {
 
@@ -180,13 +192,17 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
                 ++setCount;
 
+                double timestamp = System.currentTimeMillis() / 1000d;
+
                 // TODO: Populate data block
+                dataBlock.setDoubleValue(0, timestamp);
+                dataBlock.setStringValue(1, "Your data here");
 
                 latestRecord = dataBlock;
 
                 latestRecordTime = System.currentTimeMillis();
 
-                eventHandler.publishEvent(new SensorDataEvent(latestRecordTime, Output.this, dataBlock));
+                eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
 
                 synchronized (processingLock) {
 
@@ -196,11 +212,13 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
         } catch (Exception e) {
 
-            StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
-            logger.error("Error in worker thread: {} due to exception: {}", Thread.currentThread().getName(), stringWriter.toString());
+            logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
 
         } finally {
+
+            // Reset the flag so that when driver is restarted loop thread continues
+            // until doStop called on the output again
+            stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
         }

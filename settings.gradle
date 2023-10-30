@@ -1,21 +1,48 @@
 rootProject.name = 'osh-node'
-gradle.ext.oshCoreDir = "$rootDir/include/osh-core"
-gradle.ext.oshAddonsDir = "$rootDir/include/osh-addons"
+def includeDir = "$rootDir/include"
+def sensorDir = "$includeDir/osh-addons/sensors"
+def persistenceDir = "$includeDir/osh-addons/persistence"
+def processDir = "$includeDir/osh-addons/processing"
+def serviceDir = "$includeDir/osh-addons/services"
 
+// osh-core
+gradle.ext.oshCoreDir = "$includeDir/osh-core"
 includeBuild gradle.oshCoreDir
-//includeBuild gradle.oshAddonsDir
 
-include 'sensorhub-storage-h2'
-project(':sensorhub-storage-h2').projectDir = "$gradle.oshAddonsDir/persistence/sensorhub-storage-h2" as File
-
-include 'sensorhub-driver-videocam'
-project(':sensorhub-driver-videocam').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-driver-videocam" as File
+// osh-storage
+//include '[storage-module-name]'
+//project(':[storage-module-name]').projectDir = "$persistenceDir/[path]/[storage-module-name]" as File
+//
+// Ex:
+//
+//include 'sensorhub-storage-compat'
+//project(':sensorhub-storage-compat').projectDir = "$persistenceDir/sensorhub-storage-compat" as File
+//
+//include 'sensorhub-storage-h2'
+//project(':sensorhub-storage-h2').projectDir = "$persistenceDir/sensorhub-storage-h2" as File
 
 // osh-services
-include 'sensorhub-service-video'
-project(':sensorhub-service-video').projectDir = "$gradle.oshAddonsDir/sensors/video/sensorhub-service-video" as File
+//include '[service-name]'
+//project(':[service-name]').projectDir = "$serviceDir/[path]/[service-name]" as File
+//
+// Ex:
+//
+//include 'sensorhub-service-video'
+//project(':sensorhub-service-video').projectDir = "$serviceDir/sensorhub-service-video" as File
 
-// include all folders with build.gradle as subprojects
+// osh-sensor-drivers
+//include '[driver-name]'
+//project(':[driver-name]').projectDir = "$sensorDir/[path]/[driver-name]" as File
+//
+// Ex:
+//
+//include 'sensorhub-driver-videocam'
+//project(':sensorhub-driver-videocam').projectDir = "$sensorDir/video/sensorhub-driver-videocam" as File
+
+// Project modules
+
+// Include all folders with build.gradle as subprojects
+
 FileTree subprojects = fileTree("$rootDir/sensors").include('**/build.gradle')
 subprojects.files.each { File f ->
     File projectFolder = f.parentFile

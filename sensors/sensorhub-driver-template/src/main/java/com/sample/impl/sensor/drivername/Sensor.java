@@ -19,11 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver for the ... providing sensor description, output registration,
- * initialization and shutdown of driver and outputs.
+ * Sensor driver providing sensor description, output registration, initialization and shutdown of driver and outputs.
  *
- * @author Nick Garay
- * @since Feb. 6, 2020
+ * @author your_name
+ * @since date
  */
 public class Sensor extends AbstractSensorModule<Config> {
 
@@ -31,12 +30,10 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     Output output;
 
-    Object syncTimeLock = new Object();
-
     @Override
-    public void init() throws SensorHubException {
+    public void doInit() throws SensorHubException {
 
-        super.init();
+        super.doInit();
 
         // Generate identifiers
         generateUniqueID("[URN]", config.serialNumber);
@@ -47,29 +44,29 @@ public class Sensor extends AbstractSensorModule<Config> {
 
         addOutput(output, false);
 
-        output.init();
+        output.doInit();
 
         // TODO: Perform other initialization
     }
 
     @Override
-    public void start() throws SensorHubException {
+    public void doStart() throws SensorHubException {
 
         if (null != output) {
 
             // Allocate necessary resources and start outputs
-            output.start();
+            output.doStart();
         }
 
         // TODO: Perform other startup procedures
     }
 
     @Override
-    public void stop() throws SensorHubException {
+    public void doStop() throws SensorHubException {
 
         if (null != output) {
 
-            output.stop();
+            output.doStop();
         }
 
         // TODO: Perform other shutdown procedures

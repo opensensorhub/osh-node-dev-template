@@ -6,7 +6,7 @@ dependencies {
     implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
 //    implementation project(':sensorhub-service-video')
 //    implementation project(':sensorhub-driver-videocam')
-    testImplementation('junit:junit:4.13')
+    testImplementation('junit:junit:4.13.1')
 }
 
 // exclude tests requiring connection to the sensor
@@ -18,10 +18,10 @@ test {
 }
 
 // add info to OSGi manifest
-jar {
+osgi {
     manifest {
-        attributes 'Bundle-Vendor': ''
-        attributes 'Bundle-Activator': 'com.sentinel.impl.sensor.video.smartcam.Activator'
+        attributes ('Bundle-Vendor': 'Botts Inc')
+        attributes ('Bundle-Activator': 'com.sample.impl.sensor.drivername.Activator')
     }
 }
 

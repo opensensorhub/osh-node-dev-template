@@ -2,7 +2,7 @@ apply from: gradle.oshCoreDir + '/common.gradle'
 description = ''
 
 allprojects {
-  version = '0.0.1'
+  version = '0.0.0'
 }
 
 subprojects {
@@ -13,11 +13,21 @@ subprojects {
 dependencies {
   implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
-  implementation 'org.sensorhub:sensorhub-storage-perst:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
-  implementation project(':sensorhub-storage-h2')
-  implementation project(':sensorhub-driver-videocam')
-  implementation project(':sensorhub-service-video')
+  implementation 'org.sensorhub:sensorhub-datastore-h2'
+  implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
+  implementation project(':sensorhub-driver-template')
+
+//  implementation project(':[storage-module-name]')
+//  implementation project(':[service-name]')
+//  implementation project(':[driver-name]')
+//
+// Ex:
+//
+//  implementation project(':sensorhub-storage-compat')
+//  implementation project(':sensorhub-storage-h2')
+//  implementation project(':sensorhub-service-video')
+//  implementation project(':sensorhub-driver-videocam')
 }
 
 // create one configuration for each distribution
@@ -27,7 +37,6 @@ configurations {
 
 distributions {
   main {
-    distributionBaseName = 'osh-node-dev-template'
     contents {
       from 'scripts'
       from 'config'
