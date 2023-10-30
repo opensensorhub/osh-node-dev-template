@@ -42,13 +42,13 @@ The default URL to access the admin panel is:
 
 where **address** is the URL or IP address of the system hosting OpenSensorHub
 
-## Viewing and Harvesting Log Files
+## Viewing Log Files
 
 The general log file is accessible through the external volumes at
 
-    /home/osh/osh_config/.moduledata/log.txt
+    .moduledata/log.txt
 
-Log files for drivers, services, etc. are accessible through the external volumes at
+Log files for drivers, services, etc. are accessible through 
 
     /home/osh/osh_config/.moduledata
 
