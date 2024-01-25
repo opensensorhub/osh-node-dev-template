@@ -1,0 +1,26 @@
+apply plugin: 'java'
+description = 'Main Test Project'
+targetCompatibility = 11
+
+dependencies {
+  implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-core-osgi:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-datastore-h2:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-service-consys:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
+
+  // To test your own modules copy the template and set the project name to your modules project name.
+  // You must make sure that your project is enabled by including it in the settings.gradle file.
+  //
+  // !!!!!
+  // Do not include this "sensorhub-test" project in build.gradle as it will be packaged with your
+  // build if you do
+  // !!!!!
+  //
+  // implementation project(':PROJECT_NAME')
+  //
+  // EX:
+  // implementation project(':sensorhub-driver-rtpcam')
+}

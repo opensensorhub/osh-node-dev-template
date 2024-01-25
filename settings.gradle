@@ -5,9 +5,16 @@ def persistenceDir = "$includeDir/osh-addons/persistence"
 def processDir = "$includeDir/osh-addons/processing"
 def serviceDir = "$includeDir/osh-addons/services"
 
+def toolsDir = "$rootDir/tools"
+
 // osh-core
 gradle.ext.oshCoreDir = "$includeDir/osh-core"
 includeBuild gradle.oshCoreDir
+
+// SensorHub Test - Debugging Module
+include 'sensorhub-test'
+project(':sensorhub-test').projectDir = "$toolsDir/sensorhub-test" as File
+
 
 // osh-storage
 //include '[storage-module-name]'

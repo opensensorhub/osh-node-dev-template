@@ -9,3 +9,6 @@
 **/.classpath
 **/.idea
 **/*.iml
+/storage/
+/.moduledata/
+/data.dat
