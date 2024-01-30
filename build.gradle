@@ -12,9 +12,11 @@ subprojects {
 
 dependencies {
   implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-core-osgi:' + oshCoreVersion
+  implementation 'org.sensorhub:sensorhub-datastore-h2:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-service-swe:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
-  implementation 'org.sensorhub:sensorhub-datastore-h2'
+  implementation 'org.sensorhub:sensorhub-service-consys:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
   implementation project(':sensorhub-driver-template')
 
