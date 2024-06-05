@@ -32,6 +32,7 @@ public class Descriptor extends JarModuleProvider implements IModuleProvider {
      *
      * @return The class used to interact with the sensor/sensor platform.
      */
+    @Override
     public Class<? extends IModule<?>> getModuleClass() {
 
         return Sensor.class;
@@ -42,6 +43,7 @@ public class Descriptor extends JarModuleProvider implements IModuleProvider {
      *
      * @return The java class used to exposing configuration settings for the driver.
      */
+    @Override
     public Class<? extends ModuleConfig> getModuleConfigClass() {
 
         return Config.class;
