@@ -20,10 +20,10 @@ import org.sensorhub.api.sensor.SensorConfig;
  * Configuration settings for the {@link Sensor} driver exposed via the OpenSensorHub Admin panel.
  * <p>
  * Configuration settings take the form of
- * <code>
+ * <pre><code>
  * DisplayInfo(desc="Description of configuration field to show in UI")
  * public Type configOption;
- * </code>
+ * </code></pre>
  * <p>
  * Containing an annotation describing the setting and if applicable its range of values
  * as well as a public access variable of the given Type
@@ -32,7 +32,6 @@ import org.sensorhub.api.sensor.SensorConfig;
  * @since date
  */
 public class Config extends SensorConfig {
-
     /**
      * The unique identifier for the configured sensor (or sensor platform).
      */
