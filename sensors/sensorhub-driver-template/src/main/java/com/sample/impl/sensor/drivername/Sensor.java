@@ -1,5 +1,4 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
@@ -9,7 +8,6 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
@@ -25,14 +23,12 @@ import org.slf4j.LoggerFactory;
  * @since date
  */
 public class Sensor extends AbstractSensorModule<Config> {
-
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
     Output output;
 
     @Override
     public void doInit() throws SensorHubException {
-
         super.doInit();
 
         // Generate identifiers
@@ -41,9 +37,7 @@ public class Sensor extends AbstractSensorModule<Config> {
 
         // Create and initialize output
         output = new Output(this);
-
         addOutput(output, false);
-
         output.doInit();
 
         // TODO: Perform other initialization
@@ -51,9 +45,7 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public void doStart() throws SensorHubException {
-
-        if (null != output) {
-
+        if (output != null) {
             // Allocate necessary resources and start outputs
             output.doStart();
         }
@@ -63,9 +55,7 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public void doStop() throws SensorHubException {
-
-        if (null != output) {
-
+        if (output != null) {
             output.doStop();
         }
 
@@ -74,7 +64,6 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public boolean isConnected() {
-
         // Determine if sensor is connected
         return output.isAlive();
     }

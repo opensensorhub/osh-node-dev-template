@@ -1,5 +1,4 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
@@ -9,7 +8,6 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
@@ -30,7 +28,6 @@ import org.vast.swe.helper.GeoPosHelper;
  * @since date
  */
 public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
-
     private static final String SENSOR_OUTPUT_NAME = "[NAME]";
     private static final String SENSOR_OUTPUT_LABEL = "[LABEL]";
     private static final String SENSOR_OUTPUT_DESCRIPTION = "[DESCRIPTION]";
@@ -56,18 +53,15 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * @param parentSensor Sensor driver providing this output
      */
     Output(Sensor parentSensor) {
-
         super(SENSOR_OUTPUT_NAME, parentSensor);
 
         logger.debug("Output created");
     }
 
     /**
-     * Initializes the data structure for the output, defining the fields, their ordering,
-     * and data types.
+     * Initializes the data structure for the output, defining the fields, their ordering, and data types.
      */
     void doInit() {
-
         logger.debug("Initializing Output");
 
         // Get an instance of SWE Factory suitable to build components
@@ -95,7 +89,6 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * Begins processing data for output
      */
     public void doStart() {
-
         // Instantiate a new worker thread
         worker = new Thread(this, this.name);
 
@@ -111,9 +104,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * Terminates processing data for output
      */
     public void doStop() {
-
         synchronized (processingLock) {
-
             stopProcessing = true;
         }
 
@@ -126,31 +117,25 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
      * @return true if worker thread is active, false otherwise
      */
     public boolean isAlive() {
-
         return worker.isAlive();
     }
 
     @Override
     public DataComponent getRecordDescription() {
-
         return dataStruct;
     }
 
     @Override
     public DataEncoding getRecommendedEncoding() {
-
         return dataEncoding;
     }
 
     @Override
     public double getAverageSamplingPeriod() {
-
         long accumulator = 0;
 
         synchronized (histogramLock) {
-
             for (int idx = 0; idx < MAX_NUM_TIMING_SAMPLES; ++idx) {
-
                 accumulator += timingHistogram[idx];
             }
         }
@@ -160,27 +145,19 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
     @Override
     public void run() {
-
         boolean processSets = true;
-
         long lastSetTimeMillis = System.currentTimeMillis();
 
         try {
-
             while (processSets) {
-
                 DataBlock dataBlock;
                 if (latestRecord == null) {
-
                     dataBlock = dataStruct.createDataBlock();
-
                 } else {
-
                     dataBlock = latestRecord.renew();
                 }
 
                 synchronized (histogramLock) {
-
                     int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
 
                     // Get a sampling time for latest set based on previous set sampling time
@@ -199,23 +176,17 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
                 dataBlock.setStringValue(1, "Your data here");
 
                 latestRecord = dataBlock;
-
                 latestRecordTime = System.currentTimeMillis();
-
                 eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
 
                 synchronized (processingLock) {
-
                     processSets = !stopProcessing;
                 }
             }
 
         } catch (Exception e) {
-
             logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
-
         } finally {
-
             // Reset the flag so that when driver is restarted loop thread continues
             // until doStop called on the output again
             stopProcessing = false;
