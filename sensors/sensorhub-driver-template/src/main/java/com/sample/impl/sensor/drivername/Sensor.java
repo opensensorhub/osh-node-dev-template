@@ -35,8 +35,9 @@ public class Sensor extends AbstractSensorModule<Config> {
         super.doInit();
 
         // Generate identifiers
-        generateUniqueID("[URN]", config.serialNumber);
-        generateXmlID("[XML-PREFIX]", config.serialNumber);
+        // TODO: Update the URN and XML ID prefixes with the sensor's name
+        generateUniqueID("urn:sensor:", config.serialNumber);
+        generateXmlID("SENSOR_", config.serialNumber);
 
         // Create and initialize output
         output = new Output(this);
