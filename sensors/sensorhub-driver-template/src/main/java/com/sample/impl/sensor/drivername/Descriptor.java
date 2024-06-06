@@ -17,7 +17,7 @@ import org.sensorhub.api.module.ModuleConfig;
 import org.sensorhub.impl.module.JarModuleProvider;
 
 /**
- * Descriptor classes provide access to informative data on the OpenSensorHub driver
+ * Descriptor classes provide access to informative data on the OpenSensorHub driver.
  *
  * @author your_name
  * @since date
@@ -34,7 +34,7 @@ public class Descriptor extends JarModuleProvider implements IModuleProvider {
     }
 
     /**
-     * Identifies the class used to configure this driver
+     * Identifies the class used to configure this driver.
      *
      * @return The java class used to exposing configuration settings for the driver.
      */

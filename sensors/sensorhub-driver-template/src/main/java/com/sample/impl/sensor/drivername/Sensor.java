@@ -49,7 +49,7 @@ public class Sensor extends AbstractSensorModule<Config> {
     @Override
     public void doStart() throws SensorHubException {
         if (output != null) {
-            // Allocate necessary resources and start outputs
+            // Allocate the necessary resources and start the outputs
             output.doStart();
         }
 
@@ -67,7 +67,7 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public boolean isConnected() {
-        // Determine if sensor is connected
+        // Determine if the sensor is connected
         return output.isAlive();
     }
 }

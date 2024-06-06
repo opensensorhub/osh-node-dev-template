@@ -48,9 +48,9 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private Thread worker;
 
     /**
-     * Constructor
+     * Creates a new output for the sensor driver.
      *
-     * @param parentSensor Sensor driver providing this output
+     * @param parentSensor Sensor driver providing this output.
      */
     Output(Sensor parentSensor) {
         super(SENSOR_OUTPUT_NAME, parentSensor);
@@ -86,7 +86,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Begins processing data for output
+     * Begins processing data for output.
      */
     public void doStart() {
         // Instantiate a new worker thread
@@ -101,7 +101,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Terminates processing data for output
+     * Terminates processing data for output.
      */
     public void doStop() {
         synchronized (processingLock) {
@@ -112,9 +112,9 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Check to validate data processing is still running
+     * Check to validate if data processing is still running.
      *
-     * @return true if worker thread is active, false otherwise
+     * @return true if worker thread is active, false otherwise.
      */
     public boolean isAlive() {
         return worker.isAlive();
@@ -160,10 +160,10 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
                 synchronized (histogramLock) {
                     int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
 
-                    // Get a sampling time for latest set based on previous set sampling time
+                    // Get a sampling time for the latest set based on the previous set sampling time.
                     timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
 
-                    // Set latest sampling time to now
+                    // Set the latest sampling time to now.
                     lastSetTimeMillis = timingHistogram[setIndex];
                 }
 
@@ -187,8 +187,8 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         } catch (Exception e) {
             logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
         } finally {
-            // Reset the flag so that when driver is restarted loop thread continues
-            // until doStop called on the output again
+            // Reset the flag so that when the driver is restarted,
+            // the loop thread continues until doStop is called on the output again.
             stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
