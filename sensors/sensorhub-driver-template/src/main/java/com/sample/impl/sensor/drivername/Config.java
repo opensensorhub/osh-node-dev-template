@@ -23,7 +23,7 @@ import org.sensorhub.api.sensor.SensorConfig;
  * <p>
  * Configuration takes the form of:
  * <pre>{@code
- * @DisplayInfo(label = "Field Label", desc = "A description of the field")
+ * @DisplayInfo(label = "Field Label", desc = "A description of the field to be shown in the UI.")
  * public Type configOption = "default value";
  * }</pre>
  *
