@@ -17,7 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver providing sensor description, output registration, initialization and shutdown of driver and outputs.
+ * Driver implementation for the sensor.
+ * <p>
+ * This class is responsible for providing sensor information, managing output registration,
+ * and performing initialization and shutdown for the driver and its outputs.
  *
  * @author your_name
  * @since date
