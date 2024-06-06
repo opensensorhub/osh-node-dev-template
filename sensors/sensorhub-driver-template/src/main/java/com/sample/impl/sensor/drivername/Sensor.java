@@ -49,6 +49,8 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public void doStart() throws SensorHubException {
+        super.doStart();
+
         if (output != null) {
             // Allocate the necessary resources and start the outputs
             output.doStart();
@@ -59,6 +61,8 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public void doStop() throws SensorHubException {
+        super.doStop();
+
         if (output != null) {
             output.doStop();
         }
