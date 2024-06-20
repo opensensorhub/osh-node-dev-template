@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.swe.helper.GeoPosHelper;
 
+import java.util.ArrayList;
+
 /**
  * Output specification and provider for {@link Sensor}.
  *
@@ -41,8 +43,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private final Object processingLock = new Object();
 
     private static final int MAX_NUM_TIMING_SAMPLES = 10;
-    private int setCount = 0;
-    private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
+    private final ArrayList<Double> intervalHistogram = new ArrayList<>(MAX_NUM_TIMING_SAMPLES);
     private final Object histogramLock = new Object();
 
     private Thread worker;
@@ -132,58 +133,46 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
     @Override
     public double getAverageSamplingPeriod() {
-        long accumulator = 0;
-
         synchronized (histogramLock) {
-            for (int idx = 0; idx < MAX_NUM_TIMING_SAMPLES; ++idx) {
-                accumulator += timingHistogram[idx];
-            }
-        }
+            double sum = 0;
+            for (double sample : intervalHistogram)
+                sum += sample;
 
-        return accumulator / (double) MAX_NUM_TIMING_SAMPLES;
+            return sum / intervalHistogram.size();
+        }
     }
 
     @Override
     public void run() {
         boolean processSets = true;
-        long lastSetTimeMillis = System.currentTimeMillis();
 
         try {
             while (processSets) {
-                DataBlock dataBlock;
-                if (latestRecord == null) {
-                    dataBlock = dataStruct.createDataBlock();
-                } else {
-                    dataBlock = latestRecord.renew();
-                }
+                long timestamp = System.currentTimeMillis();
+                DataBlock dataBlock = latestRecord == null ? dataStruct.createDataBlock() : latestRecord.renew();
 
+                // Keep track of the time between updates for calculating the average sampling period
                 synchronized (histogramLock) {
-                    int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
-
-                    // Get a sampling time for the latest set based on the previous set sampling time.
-                    timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
-
-                    // Set the latest sampling time to now.
-                    lastSetTimeMillis = timingHistogram[setIndex];
+                    if (latestRecord != null) {
+                        intervalHistogram.add((timestamp - latestRecordTime) / 1000d);
+                        if (intervalHistogram.size() > MAX_NUM_TIMING_SAMPLES) {
+                            intervalHistogram.remove(0);
+                        }
+                    }
                 }
-
-                ++setCount;
-
-                double timestamp = System.currentTimeMillis() / 1000d;
 
                 // TODO: Populate data block
-                dataBlock.setDoubleValue(0, timestamp);
+                dataBlock.setDoubleValue(0, timestamp / 1000d);
                 dataBlock.setStringValue(1, "Your data here");
 
                 latestRecord = dataBlock;
-                latestRecordTime = System.currentTimeMillis();
+                latestRecordTime = timestamp;
                 eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
 
                 synchronized (processingLock) {
                     processSets = !stopProcessing;
                 }
             }
-
         } catch (Exception e) {
             logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
         } finally {
