@@ -150,16 +150,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
             while (processSets) {
                 long timestamp = System.currentTimeMillis();
                 DataBlock dataBlock = latestRecord == null ? dataStruct.createDataBlock() : latestRecord.renew();
-
-                // Keep track of the time between updates for calculating the average sampling period
-                synchronized (histogramLock) {
-                    if (latestRecord != null) {
-                        intervalHistogram.add((timestamp - latestRecordTime) / 1000d);
-                        if (intervalHistogram.size() > MAX_NUM_TIMING_SAMPLES) {
-                            intervalHistogram.remove(0);
-                        }
-                    }
-                }
+                updateIntervalHistogram();
 
                 // TODO: Populate data block
                 dataBlock.setDoubleValue(0, timestamp / 1000d);
@@ -181,6 +172,23 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
             stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
+        }
+    }
+
+    /**
+     * Updates the interval histogram with the time between the latest record and the current time
+     * for calculating the average sampling period.
+     */
+    private void updateIntervalHistogram() {
+        synchronized (histogramLock) {
+            if (latestRecord != null && latestRecordTime != Long.MIN_VALUE) {
+                long interval = System.currentTimeMillis() - latestRecordTime;
+                intervalHistogram.add(interval / 1000d);
+
+                if (intervalHistogram.size() > MAX_NUM_TIMING_SAMPLES) {
+                    intervalHistogram.remove(0);
+                }
+            }
         }
     }
 }
