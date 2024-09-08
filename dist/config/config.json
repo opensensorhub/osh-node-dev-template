@@ -95,6 +95,7 @@
     "id": "5cb05c9c-9123-4fa1-8731-ffaa51489678",
     "moduleClass": "org.sensorhub.ui.AdminUIModule",
     "name": "Admin UI",
+    "deploymentName": "[Edit config.json \"deploymentName\" field]",
     "autoStart": true
   },
   {
