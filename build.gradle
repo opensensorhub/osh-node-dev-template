@@ -41,7 +41,7 @@ distributions {
   main {
     distributionBaseName = 'osh-node'
     contents {
-      from 'dist/scripts/main/'
+      from 'dist/scripts/'
       into ('config') {
         from 'dist/config'
         from 'dist/keystores/osh-keystore.p12'
