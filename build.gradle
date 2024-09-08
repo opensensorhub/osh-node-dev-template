@@ -44,10 +44,6 @@ distributions {
       from 'dist/scripts/'
       into ('config') {
         from 'dist/config'
-        from 'dist/keystores/osh-keystore.p12'
-        into('trusted_certs') {
-          from 'dist/trusted_certs'
-        }
       }
       from 'README.md'
       into('web') {
