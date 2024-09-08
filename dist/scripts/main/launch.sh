@@ -96,7 +96,7 @@ java -Xmx2g \
 	-cp "lib/*:userclasses:userlib/*" \
 	-Djava.system.class.loader="org.sensorhub.utils.NativeClassLoader" \
 	-Djavax.net.ssl.keyStore="./config/osh-keystore.p12" \
-	-Djavax.net.ssl.keyStorePassword="atakatak" \
+	-Djavax.net.ssl.keyStorePassword="osh-keystore" \
 	-Djavax.net.ssl.trustStore="$SCRIPT_DIR/trustStore.jks" \
 	-Djavax.net.ssl.trustStorePassword="changeit" \
 	org.sensorhub.impl.SensorHub ./config/config.json ./db
