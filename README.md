@@ -18,41 +18,6 @@ The current “node” template source code of OpenSensorHub is located at GitLa
  
          git clone -–recursive https://github.com/opensensorhub/osh-node-dev-template.git
 
-## Setting the Keystore
-
-To set a keystore for Java in the PKCS12 (.p12) format, you can use the keytool command. Here are the steps:
-
-### Generate a Keystore
-
-If you don’t already have a keystore, you can create one using the following command:
-
-    keytool -genkeypair -alias mykey -keyalg RSA -keystore keystore.jks -storetype JKS
-
-This command generates a keystore in the JKS format.
-
-### Convert the Keystore to PKCS12
-
-To convert the JKS keystore to PKCS12, use the following command:
-
-    keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.p12 -srcstoretype JKS -deststoretype PKCS12 -deststorepass [password] -srcalias mykey
-
-- **password**: The password set when generating the keystore
-
-Replace keystore.jks with the path to your JKS keystore, keystore.p12 with the desired path for your PKCS12 keystore,
-and password with your desired password1.
-
-### Verify the Keystore
-
-You can verify the contents of your new PKCS12 keystore using:
-
-    keytool -list -v -keystore keystore.p12 -storetype PKCS12
-
-### Update OSH Distribution Artifact
-
-1. Copy the ```keystore.p12``` file to ./dist/keystores/osh-keystore.p12
-2. Change the ```-Djavax.net.ssl.keyStorePassword="osh-keystore"``` in the launch scripts to password assigned when
-   creating the keystore file
-
 ## Building and Deploying the Node
 
 ### Gradle
