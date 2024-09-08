@@ -39,9 +39,16 @@ configurations {
 
 distributions {
   main {
+    distributionBaseName = 'osh-node'
     contents {
-      from 'scripts'
-      from 'config'
+      from 'dist/scripts/main/'
+      into ('config') {
+        from 'dist/config'
+        from 'dist/keystores/osh-keystore.p12'
+        into('trusted_certs') {
+          from 'dist/trusted_certs'
+        }
+      }
       from 'README.md'
       into('web') {
         from 'web'
@@ -49,8 +56,10 @@ distributions {
       into('lib') {
         from project.configurations.runtimeClasspath
       }
-      into('db'){
-        from 'data_files'
+      subprojects.each { p ->
+        into('config/sensorML') {
+          from("${p.projectDir}/sensorML")
+        }
       }
     }
   }
