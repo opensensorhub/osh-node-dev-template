@@ -59,3 +59,13 @@ subprojects.files.each { File f ->
         project(projectName).projectDir = projectFolder
     }
 }
+
+FileTree processProjects = fileTree("$rootDir/processing").include('**/build.gradle')
+processProjects.files.each { File f ->
+    File projectFolder = f.parentFile
+    if (projectFolder != rootDir) {
+        String projectName = ':' + projectFolder.name
+        include projectName
+        project(projectName).projectDir = projectFolder
+    }
+}
