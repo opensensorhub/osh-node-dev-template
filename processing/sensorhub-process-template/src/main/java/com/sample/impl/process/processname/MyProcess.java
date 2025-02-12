@@ -21,6 +21,7 @@ public class MyProcess extends ExecutableProcessImpl {
         super(INFO);
 
         SWEHelper fac = new SWEHelper();
+
         // Create process inputs, outputs, and parameters
         this.inputData.add("input1", input1 = fac.createCount().build());
         this.outputData.add("output1", output1 = fac.createCount().build());
@@ -29,15 +30,14 @@ public class MyProcess extends ExecutableProcessImpl {
 
     /**
      * Process execution method. This is what gets called when your process runs
-     *
-     * @throws ProcessException
      */
     @Override
-    public void execute() throws ProcessException {
+    public void execute() {
         int paramValue = parameter1.getData().getIntValue();
         int inputValue = input1.getData().getIntValue();
 
-        // Do whatever computations/processing with your input and parameter data, and use it to populate the output data blocks
+        // Do whatever computations/processing with your input and parameter data,
+        // and use it to populate the output data blocks
         int equation = inputValue * paramValue;
 
         output1.getData().setIntValue(equation);

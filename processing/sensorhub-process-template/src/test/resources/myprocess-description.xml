@@ -1,4 +1,4 @@
-<sml:AggregateProcess xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sml="http://www.opengis.net/sensorml/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" gml:id="F1">
+<sml:AggregateProcess xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sml="http://www.opengis.net/sensorml/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="F1">
     <gml:identifier codeSpace="uid">[UUID or URN]</gml:identifier>
     <sml:outputs>
         <sml:OutputList>
@@ -16,7 +16,9 @@
                     <sml:typeOf xlink:href="urn:osh:process:datasource:stream"/>
                     <sml:configuration>
                         <sml:Settings>
-                            <sml:setValue ref="parameters/producerURI">urn:of:system:with:datastream</sml:setValue>
+                            <sml:setValue ref="parameters/producerURI">
+                                urn:of:system:with:datastream
+                            </sml:setValue>
                         </sml:Settings>
                     </sml:configuration>
                 </sml:SimpleProcess>
@@ -59,8 +61,12 @@
                     <sml:typeOf xlink:href="urn:osh:process:datasink:commandstream"/>
                     <sml:configuration>
                         <sml:Settings>
-                            <sml:setValue ref="parameters/systemUID">urn:to:system:with:controlstreams</sml:setValue>
-                            <sml:setValue ref="parameters/inputName">controlStream1</sml:setValue>
+                            <sml:setValue ref="parameters/systemUID">
+                                urn:to:system:with:controlstreams
+                            </sml:setValue>
+                            <sml:setValue ref="parameters/inputName">
+                                controlStream1
+                            </sml:setValue>
                         </sml:Settings>
                     </sml:configuration>
                 </sml:SimpleProcess>
@@ -71,14 +77,14 @@
         <sml:ConnectionList>
             <sml:connection>
                 <sml:Link>
-                    <sml:source ref="components/source0/outputs/GenericOutput/anyOutputMatchingInput1Struct"/>
+                    <sml:source ref="components/source0/outputs/[outputName]/[fieldName]"/>
                     <sml:destination ref="components/process0/inputs/input1"/>
                 </sml:Link>
             </sml:connection>
             <sml:connection>
                 <sml:Link>
                     <sml:source ref="components/process0/outputs/output1"/>
-                    <sml:destination ref="components/control0/inputs/controlStream1/anyInputMatchingOutput1Struct"/>
+                    <sml:destination ref="components/control0/inputs/[controlStream1]/[controlFieldName]"/>
                 </sml:Link>
             </sml:connection>
             <sml:connection>

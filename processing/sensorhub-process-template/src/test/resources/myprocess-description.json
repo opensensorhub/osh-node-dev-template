@@ -7,9 +7,7 @@
     {
       "type": "Count",
       "name": "output1",
-      "label": "Output 1",
-      "definition": "http://sensorml.com/ont/swe/property/[DEFINITION]",
-      "description": "Description of composite process' output"
+      "label": "Output 1"
     }
   ],
   "components": [
@@ -76,14 +74,14 @@
       }
     }
   ],
-  "connection": [
+  "connections": [
     {
-      "source": "components/source0/outputs/anyOutputMatchingInput1Struct",
+      "source": "components/source0/outputs/[outputName]/[fieldName]",
       "destination": "components/process0/inputs/input1"
     },
     {
       "source": "components/process0/outputs/output1",
-      "destination": "components/control0/inputs/controlStreamInputName"
+      "destination": "components/control0/inputs/[controlStream1]/[controlFieldName]"
     },
     {
       "source": "components/process0/outputs/output1",
