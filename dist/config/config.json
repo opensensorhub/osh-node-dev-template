@@ -121,7 +121,7 @@
     "security": {
       "objClass": "org.sensorhub.api.security.SecurityConfig",
       "enableAccessControl": true,
-      "requireAuth": false
+      "requireAuth": true
     },
     "enableTransactional": true,
     "ogcCapabilitiesInfo": {
