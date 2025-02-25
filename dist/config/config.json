@@ -116,12 +116,12 @@
     "maxObsCount": 100,
     "maxRecordCount": 100000,
     "maxFois": 10,
-    "defaultLiveTimeout": 10.0,
+    "defaultLiveTimeout": 600.0,
     "templateTimeout": 600,
     "security": {
       "objClass": "org.sensorhub.api.security.SecurityConfig",
       "enableAccessControl": true,
-      "requireAuth": false
+      "requireAuth": true
     },
     "enableTransactional": true,
     "ogcCapabilitiesInfo": {
@@ -169,13 +169,37 @@
     "autoStart": true
   },
   {
-    "objClass": "org.sensorhub.impl.service.sweapi.SWEApiServiceConfig",
-    "databaseID": "aa7a4b3c-c5db-4119-9422-6fc0a05ce7c1",
+    "objClass": "org.sensorhub.impl.database.system.SystemDriverDatabaseConfig",
+    "dbConfig": {
+      "objClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabaseConfig",
+      "indexObsLocation": false,
+      "storagePath": "data.dat",
+      "memoryCacheSize": 5120,
+      "autoCommitBufferSize": 1024,
+      "autoCommitPeriod": 10,
+      "autoCompactFillRate": 40,
+      "idProviderType": "SEQUENTIAL",
+      "useCompression": false,
+      "readOnly": false,
+      "compactOnClose": false,
+      "moduleClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabase",
+      "autoStart": false
+    },
+    "systemUIDs": [],
+    "minCommitPeriod": 10000,
+    "databaseNum": 1,
+    "id": "29f2b677-95b1-4499-8e5b-459839ec3eb6",
+    "moduleClass": "org.sensorhub.impl.database.system.SystemDriverDatabase",
+    "name": "System Driver Database",
+    "autoStart": true
+  },
+  {
+    "objClass": "org.sensorhub.impl.service.consys.ConSysApiServiceConfig",
     "customFormats": [],
     "security": {
       "objClass": "org.sensorhub.api.security.SecurityConfig",
       "enableAccessControl": false,
-      "requireAuth": true
+      "requireAuth": false
     },
     "enableTransactional": false,
     "maxResponseLimit": 100000,
@@ -195,37 +219,9 @@
     "enableHttpPOST": true,
     "enableSOAP": true,
     "endPoint": "/api",
-    "id": "a8009d0a-294d-47a5-88fb-6df304f62c5a",
-    "moduleClass": "org.sensorhub.impl.service.sweapi.SWEApiService",
-    "name": "SensorWeb API Service",
-    "autoStart": true
-  },
-  {
-    "objClass": "org.sensorhub.impl.database.system.SystemDriverDatabaseConfig",
-    "dbConfig": {
-      "objClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabaseConfig",
-      "indexObsLocation": false,
-      "storagePath": "./db/db.dat",
-      "memoryCacheSize": 5120,
-      "autoCommitBufferSize": 1024,
-      "autoCommitPeriod": 10,
-      "idProviderType": "SEQUENTIAL",
-      "useCompression": false,
-      "readOnly": false,
-      "compactOnClose": false,
-      "databaseNum": 1,
-      "moduleClass": "org.sensorhub.impl.datastore.h2.MVObsSystemDatabase",
-      "name": "Backing Store",
-      "description": "Implementation of backing store for System Driver Database",
-      "autoStart": false
-    },
-    "systemUIDs": [],
-    "minCommitPeriod": 10000,
-    "databaseNum": 1,
-    "id": "aa7a4b3c-c5db-4119-9422-6fc0a05ce7c1",
-    "moduleClass": "org.sensorhub.impl.database.system.SystemDriverDatabase",
-    "name": "System Driver Database",
-    "description": "Storage Module for Selected Systems by UID",
+    "id": "2659dc3b-f243-477e-b43f-214b75cc8c57",
+    "moduleClass": "org.sensorhub.impl.service.consys.ConSysApiService",
+    "name": "Connected Systems API Service",
     "autoStart": true
   }
 ]

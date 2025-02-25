@@ -1,0 +1,91 @@
+{
+  "type": "AggregateProcess",
+  "uniqueId": "[UUID or URN]",
+  "label": "Human readable label for composite process",
+  "description": "Description of the composite process",
+  "outputs": [
+    {
+      "type": "Count",
+      "name": "output1",
+      "label": "Output 1"
+    }
+  ],
+  "components": [
+    {
+      "type": "SimpleProcess",
+      "name": "source0",
+      "typeOf": {
+        "href": "urn:osh:process:datasource:stream"
+      },
+      "configuration": {
+        "setValues": [
+          {
+            "ref": "parameters/producerURI",
+            "value": "urn:of:system:with:datastream"
+          }
+        ]
+      }
+    },
+    {
+      "type": "SimpleProcess",
+      "name": "process0",
+      "label": "Process Label",
+      "description": "Description of my process goes here",
+      "typeOf": {
+        "href": "urn:osh:process:myprocessname"
+      },
+      "inputs": [
+        {
+          "type": "Count",
+          "name": "input1"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "Count",
+          "name": "output1"
+        }
+      ],
+      "parameters": [
+        {
+          "type": "Count",
+          "name": "param1",
+          "value": 12345
+        }
+      ]
+    },
+    {
+      "type": "SimpleProcess",
+      "name": "control0",
+      "typeOf": {
+        "href": "urn:osh:process:datasink:commandstream"
+      },
+      "configuration": {
+        "setValues": [
+          {
+            "ref": "parameters/systemUID",
+            "value": "urn:to:system:with:controlstream"
+          },
+          {
+            "ref": "parameters/inputName",
+            "value": "controlStreamInputName"
+          }
+        ]
+      }
+    }
+  ],
+  "connections": [
+    {
+      "source": "components/source0/outputs/[outputName]/[fieldName]",
+      "destination": "components/process0/inputs/input1"
+    },
+    {
+      "source": "components/process0/outputs/output1",
+      "destination": "components/control0/inputs/[controlStream1]/[controlFieldName]"
+    },
+    {
+      "source": "components/process0/outputs/output1",
+      "destination": "outputs/output1"
+    }
+  ]
+}

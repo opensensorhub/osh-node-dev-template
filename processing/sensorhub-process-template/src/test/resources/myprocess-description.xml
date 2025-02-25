@@ -1,0 +1,98 @@
+<sml:AggregateProcess xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sml="http://www.opengis.net/sensorml/2.0" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="F1">
+    <gml:identifier codeSpace="uid">[UUID or URN]</gml:identifier>
+    <sml:outputs>
+        <sml:OutputList>
+            <sml:output name="output1">
+                <swe:Count>
+                    <swe:label>Output 1</swe:label>
+                </swe:Count>
+            </sml:output>
+        </sml:OutputList>
+    </sml:outputs>
+    <sml:components>
+        <sml:ComponentList>
+            <sml:component name="source0">
+                <sml:SimpleProcess gml:id="F2">
+                    <sml:typeOf xlink:href="urn:osh:process:datasource:stream"/>
+                    <sml:configuration>
+                        <sml:Settings>
+                            <sml:setValue ref="parameters/producerURI">
+                                urn:of:system:with:datastream
+                            </sml:setValue>
+                        </sml:Settings>
+                    </sml:configuration>
+                </sml:SimpleProcess>
+            </sml:component>
+            <sml:component name="process0">
+                <sml:SimpleProcess gml:id="F3">
+                    <sml:typeOf xlink:href="urn:osh:process:myprocessname"/>
+                    <sml:inputs>
+                        <sml:InputList>
+                            <sml:input name="input1">
+                                <swe:Count>
+                                    <swe:label>Input 1</swe:label>
+                                </swe:Count>
+                            </sml:input>
+                        </sml:InputList>
+                    </sml:inputs>
+                    <sml:outputs>
+                        <sml:OutputList>
+                            <sml:output name="output1">
+                                <swe:Count>
+                                    <swe:label>Output 1</swe:label>
+                                </swe:Count>
+                            </sml:output>
+                        </sml:OutputList>
+                    </sml:outputs>
+                    <sml:parameters>
+                        <sml:ParameterList>
+                            <sml:parameter name="param1">
+                                <swe:Count>
+                                    <swe:label>Parameter 1</swe:label>
+                                    <swe:value>12345</swe:value>
+                                </swe:Count>
+                            </sml:parameter>
+                        </sml:ParameterList>
+                    </sml:parameters>
+                </sml:SimpleProcess>
+            </sml:component>
+            <sml:component name="control0">
+                <sml:SimpleProcess gml:id="F4">
+                    <sml:typeOf xlink:href="urn:osh:process:datasink:commandstream"/>
+                    <sml:configuration>
+                        <sml:Settings>
+                            <sml:setValue ref="parameters/systemUID">
+                                urn:to:system:with:controlstreams
+                            </sml:setValue>
+                            <sml:setValue ref="parameters/inputName">
+                                controlStream1
+                            </sml:setValue>
+                        </sml:Settings>
+                    </sml:configuration>
+                </sml:SimpleProcess>
+            </sml:component>
+        </sml:ComponentList>
+    </sml:components>
+    <sml:connections>
+        <sml:ConnectionList>
+            <sml:connection>
+                <sml:Link>
+                    <sml:source ref="components/source0/outputs/[outputName]/[fieldName]"/>
+                    <sml:destination ref="components/process0/inputs/input1"/>
+                </sml:Link>
+            </sml:connection>
+            <sml:connection>
+                <sml:Link>
+                    <sml:source ref="components/process0/outputs/output1"/>
+                    <sml:destination ref="components/control0/inputs/[controlStream1]/[controlFieldName]"/>
+                </sml:Link>
+            </sml:connection>
+            <sml:connection>
+                <sml:Link>
+                    <sml:source ref="components/process0/outputs/output1"/>
+                    <sml:destination ref="outputs/output1"/>
+                </sml:Link>
+            </sml:connection>
+        </sml:ConnectionList>
+    </sml:connections>
+</sml:AggregateProcess>
