@@ -1,6 +1,22 @@
-# [NAME]
-
+# [KY032]
 Sensor adapter for [NAME].
+
+This is my attempt to make a driver for the <a href="https://arduinomodules.info/ky-032-infrared-obstacle-avoidance-sensor-module/">KY-032 Infrared Obstacle Avoidance Sensor</a>. As you read through my code, you will notice several area's with the comment <em>"// myNote:"</em>. This note will represent all the area's where I manually updated existing code (Output.java, build.gradle, etc...).
+
+## Files Added/Updated
+### KY032.java
+To initally test whether or not my Sensor was working, I wrote a Python script since that was a language I'm more familiar with. Once I was able to confirm that the Raspberry Pi was receiving signals from the Sensor, I re-wrote the Python program using Java. That program ultimately became this Java Class. This class uses the <a href="https://www.pi4j.com/1.2/pins/model-3b-rev1.html">PI4J Library</a> to take readings of the Sensor from the Raspberry Pi's GPIO signal. To construct the class, the GPIO BCM pin number reading the sensor's ouput must be provided. Once initialized, the class mainly has one method that I created called <em>readSensor()</em>. This method is used in the output class to read the Raspberry PI's GPIO output each time the run() method is used.  
+
+### build.gradle
+In order for the KY032.java class to work properly, I added the dependencies to use the <a href="https://www.pi4j.com/1.2/pins/model-3b-rev1.html">PI4J Library</a>, as well as some of the primary details (Description, version, etc).
+
+### Output.java
+In this file, I really only do (3) things:
+- Create a Sensor Instance my KY032.java class
+- Use sweFactory to create a data structure for my sensor
+- Assign the <em>TTL</em> value of my data record in the <b>run()</b> method to read my GPIO signal.
+
+
 
 ## Configuration
 
