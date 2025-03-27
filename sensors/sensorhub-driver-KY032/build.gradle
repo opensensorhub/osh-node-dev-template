@@ -1,0 +1,44 @@
+
+// Discription shows up as Module Type in OSH
+description = 'KY-032 Sensor'
+// ext.details Updates the description for a module in OSH
+ext.details = "Driver for KY-030 Sensor"
+version = '0.0.1'
+
+dependencies {
+    implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
+//    implementation project(':sensorhub-service-video')
+//    implementation project(':sensorhub-driver-videocam')
+    testImplementation('junit:junit:4.13.1')
+    //implementation "com.pi4j:pi4j-core:2.7.0"
+    //implementation "com.pi4j:pi4j-plugin-raspberrypi:2.7.0"
+    //implementation 'com.pi4j:pi4j-plugin-pigpio:2.7.0'
+}
+
+// exclude tests requiring connection to the sensor
+// these have to be run manually
+//      If tests are to be excluded list them here as follows
+//          exclude '**/TestNameClass.class'
+test {
+    useJUnit()
+}
+
+// add info to OSGi manifest
+osgi {
+    manifest {
+        attributes ('Bundle-Vendor': 'Botts Inc')
+        attributes ('Bundle-Activator': 'com.sample.impl.sensor.mySensor.Activator')
+    }
+}
+
+// add info to maven pom
+ext.pom >>= {
+    developers {
+        developer {
+            id 'bill.brown@botts-inc.com'
+            name 'Bill Brown'
+            organization 'Botts-Inc'
+            organizationUrl 'https://botts-inc.com/'
+        }
+    }
+}
