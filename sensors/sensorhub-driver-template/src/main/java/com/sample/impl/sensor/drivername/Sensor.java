@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
  * and performing initialization and shutdown for the driver and its outputs.
  */
 public class Sensor extends AbstractSensorModule<Config> {
+    public static final String UID_PREFIX = "urn:osh:template_driver:";
+    public static final String XML_PREFIX = "TEMPLATE_DRIVER_";
 
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
@@ -35,8 +37,8 @@ public class Sensor extends AbstractSensorModule<Config> {
         super.doInit();
 
         // Generate identifiers
-        generateUniqueID("[URN]", config.serialNumber);
-        generateXmlID("[XML-PREFIX]", config.serialNumber);
+        generateUniqueID(UID_PREFIX, config.serialNumber);
+        generateXmlID(XML_PREFIX, config.serialNumber);
 
         // Create and initialize output
         output = new Output(this);
