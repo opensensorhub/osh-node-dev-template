@@ -21,6 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.swe.helper.GeoPosHelper;
 
+import java.util.ArrayList;
+
+import static java.lang.Thread.sleep;
+
 /**
  * Output specification and provider for {@link Sensor}.
  */
@@ -33,13 +37,12 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private static final int MAX_NUM_TIMING_SAMPLES = 10;
 
     private final Object processingLock = new Object();
-    private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
+    private final ArrayList<Double> intervalHistogram = new ArrayList<>(MAX_NUM_TIMING_SAMPLES);
     private final Object histogramLock = new Object();
 
     private DataRecord dataStruct;
     private DataEncoding dataEncoding;
     private Boolean stopProcessing = false;
-    private int setCount = 0;
     private Thread worker;
 
     /**
@@ -95,7 +98,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     /**
      * Verify if the data processing thread is still active.
      *
-     * @return true if worker thread is active, false otherwise
+     * @return true if worker thread is active, false otherwise.
      */
     public boolean isAlive() {
         return worker.isAlive();
@@ -113,52 +116,37 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
     @Override
     public double getAverageSamplingPeriod() {
-        long accumulator = 0;
-
         synchronized (histogramLock) {
-            for (int idx = 0; idx < MAX_NUM_TIMING_SAMPLES; ++idx) {
-                accumulator += timingHistogram[idx];
-            }
-        }
+            double sum = 0;
+            for (double sample : intervalHistogram)
+                sum += sample;
 
-        return accumulator / (double) MAX_NUM_TIMING_SAMPLES;
+            return sum / intervalHistogram.size();
+        }
     }
 
     @Override
     public void run() {
         boolean processSets = true;
-        long lastSetTimeMillis = System.currentTimeMillis();
 
         try {
             while (processSets) {
-                DataBlock dataBlock;
-                if (latestRecord == null) {
-                    dataBlock = dataStruct.createDataBlock();
-                } else {
-                    dataBlock = latestRecord.renew();
-                }
+                long timestamp = System.currentTimeMillis();
+                DataBlock dataBlock = latestRecord == null ? dataStruct.createDataBlock() : latestRecord.renew();
 
-                synchronized (histogramLock) {
-                    int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
-
-                    // Get a sampling time for the latest set based on the previous set sampling time.
-                    timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
-
-                    // Set the latest sampling time to now.
-                    lastSetTimeMillis = timingHistogram[setIndex];
-                }
-
-                ++setCount;
-
-                double timestamp = System.currentTimeMillis() / 1000d;
+                updateIntervalHistogram();
 
                 // Populate the data block
-                dataBlock.setDoubleValue(0, timestamp);
+                dataBlock.setDoubleValue(0, timestamp / 1000d);
                 dataBlock.setStringValue(1, "Your data here");
 
+                // Publish the data block
                 latestRecord = dataBlock;
-                latestRecordTime = System.currentTimeMillis();
+                latestRecordTime = timestamp;
                 eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
+
+                // Simulate a delay between data samples
+                sleep(100);
 
                 synchronized (processingLock) {
                     processSets = !stopProcessing;
@@ -172,6 +160,23 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
             stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);
+        }
+    }
+
+    /**
+     * Updates the interval histogram with the time between the latest record and the current time
+     * for calculating the average sampling period.
+     */
+    private void updateIntervalHistogram() {
+        synchronized (histogramLock) {
+            if (latestRecord != null && latestRecordTime != Long.MIN_VALUE) {
+                long interval = System.currentTimeMillis() - latestRecordTime;
+                intervalHistogram.add(interval / 1000d);
+
+                if (intervalHistogram.size() > MAX_NUM_TIMING_SAMPLES) {
+                    intervalHistogram.remove(0);
+                }
+            }
         }
     }
 }
