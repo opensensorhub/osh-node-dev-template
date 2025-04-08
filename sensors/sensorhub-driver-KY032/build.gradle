@@ -10,9 +10,11 @@ dependencies {
 //    implementation project(':sensorhub-service-video')
 //    implementation project(':sensorhub-driver-videocam')
     testImplementation('junit:junit:4.13.1')
-    //implementation "com.pi4j:pi4j-core:2.7.0"
-    //implementation "com.pi4j:pi4j-plugin-raspberrypi:2.7.0"
-    //implementation 'com.pi4j:pi4j-plugin-pigpio:2.7.0'
+
+    // myNote:
+    // PI4J dependencies
+    implementation group: 'com.pi4j', name: 'pi4j-core', version: '2.8.0'
+    implementation group: 'com.pi4j', name: 'pi4j-plugin-gpiod', version: '2.8.0'
 }
 
 // exclude tests requiring connection to the sensor
@@ -27,7 +29,7 @@ test {
 osgi {
     manifest {
         attributes ('Bundle-Vendor': 'Botts Inc')
-        attributes ('Bundle-Activator': 'com.sample.impl.sensor.mySensor.Activator')
+        attributes ('Bundle-Activator': 'com.sample.impl.sensor.KY032.Activator')
     }
 }
 

@@ -19,7 +19,8 @@ dependencies {
   // build if you do
   // !!!!!
   //
-  // implementation project(':PROJECT_NAME')
+  implementation project(':sensorhub-driver-KY032')
+  implementation project(':sensorhub-driver-simulator')
   //
   // EX:
   // implementation project(':sensorhub-driver-rtpcam')

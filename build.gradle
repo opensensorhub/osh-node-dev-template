@@ -1,8 +1,11 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply from: gradle.oshCoreDir + '/common.gradle'
 description = ''
 
+// UPDATE VERSION OF PROJECT
 allprojects {
-  version = '0.0.0'
+  version = '1.0.0'
 }
 
 subprojects {
@@ -10,6 +13,8 @@ subprojects {
   repositories.addAll(rootProject.repositories)
 }
 
+
+// SET DEPENDENCIES
 dependencies {
   implementation 'org.sensorhub:sensorhub-core:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-core-osgi:' + oshCoreVersion
@@ -18,18 +23,20 @@ dependencies {
   implementation 'org.sensorhub:sensorhub-webui-core:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-service-consys:' + oshCoreVersion
   implementation 'org.sensorhub:sensorhub-service-sweapi:' + oshCoreVersion
-  implementation project(':sensorhub-driver-template')
-
-//  implementation project(':[storage-module-name]')
-//  implementation project(':[service-name]')
-//  implementation project(':[driver-name]')
-//
-// Ex:
-//
-//  implementation project(':sensorhub-storage-compat')
-//  implementation project(':sensorhub-storage-h2')
-//  implementation project(':sensorhub-service-video')
-//  implementation project(':sensorhub-driver-videocam')
+  //implementation project(':sensorhub-driver-template')
+  // My Sample
+  //implementation project(':sensorhub-driver-gps-nmea')
+  implementation project(':sensorhub-driver-KY032')
+  implementation project(':sensorhub-driver-simulator')
+  //  implementation project(':[service-name]')
+  //  implementation project(':[driver-name]')
+  //
+  // Ex:
+  //
+  //  implementation project(':sensorhub-storage-compat')
+  //  implementation project(':sensorhub-storage-h2')
+  //  implementation project(':sensorhub-service-video')
+  //  implementation project(':sensorhub-driver-videocam')
 }
 
 // create one configuration for each distribution
@@ -37,9 +44,11 @@ configurations {
   main
 }
 
+// DISTRIBUTION BASE NAME UPDATE
 distributions {
   main {
-    distributionBaseName = 'osh-node'
+    // This names the file under build > distributions
+    distributionBaseName = 'OSH_Distribution_01'
     contents {
       from 'dist/scripts/'
       into ('config') {
@@ -60,5 +69,28 @@ distributions {
     }
   }
 }
+/*
+task deployToPi(type: Exec){
+  dependsOn(build)
+
+  //define paths and settings:
+  def piUser = "pi"
+  def piHost = "192.168.50.122"
+  def piPassword = "raspberry"
+  def piTargetDir = "/home/pi/Desktop/KY032"
+  def distributionZip = "build/distributions/OSH_Distribution_01-1.0.0.zip"
+
+  doFirst {
+    if (!file(distributionZip).exists()) {
+      throw new GradleException("Distribution ZIP not found: $distributionZip")
+    }
+  }
+  // Use sshpass + scp to send the file
+  commandLine 'sh', '-c', """
+        sshpass -p '${piPassword}' scp '${distributionZip}' ${piUser}@${piHost}:${piTargetDir}
+    """
+}
+
+*/
 
 apply from: gradle.oshCoreDir + '/release.gradle'

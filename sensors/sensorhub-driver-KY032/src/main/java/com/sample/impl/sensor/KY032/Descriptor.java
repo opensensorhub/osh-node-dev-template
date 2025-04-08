@@ -11,7 +11,7 @@
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
 
  ******************************* END LICENSE BLOCK ***************************/
-package com.sample.impl.sensor.mySensor;
+package com.sample.impl.sensor.KY032;
 
 import org.sensorhub.api.module.IModule;
 import org.sensorhub.api.module.IModuleProvider;
@@ -34,7 +34,7 @@ public class Descriptor extends JarModuleProvider implements IModuleProvider {
      */
     public Class<? extends IModule<?>> getModuleClass() {
 
-        return Sensor.class;
+        return KY032Sensor.class;
     }
 
     /**
@@ -44,6 +44,6 @@ public class Descriptor extends JarModuleProvider implements IModuleProvider {
      */
     public Class<? extends ModuleConfig> getModuleConfigClass() {
 
-        return Config.class;
+        return KY032Config.class;
     }
 }

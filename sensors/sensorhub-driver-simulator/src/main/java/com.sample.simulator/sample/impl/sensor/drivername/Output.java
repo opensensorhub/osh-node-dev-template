@@ -21,7 +21,11 @@ import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vast.swe.SWEConstants;
+import org.vast.swe.SWEHelper;
 import org.vast.swe.helper.GeoPosHelper;
+
+import java.util.Random;
 
 /**
  * Output specification and provider for {@link Sensor}.
@@ -31,9 +35,9 @@ import org.vast.swe.helper.GeoPosHelper;
  */
 public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
-    private static final String SENSOR_OUTPUT_NAME = "[NAME]";
-    private static final String SENSOR_OUTPUT_LABEL = "[LABEL]";
-    private static final String SENSOR_OUTPUT_DESCRIPTION = "[DESCRIPTION]";
+    private static final String SENSOR_OUTPUT_NAME = "Weather";
+    private static final String SENSOR_OUTPUT_LABEL = "Weather";
+    private static final String SENSOR_OUTPUT_DESCRIPTION = "Weather measurements";
 
     private static final Logger logger = LoggerFactory.getLogger(Output.class);
 
@@ -71,19 +75,38 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         logger.debug("Initializing Output");
 
         // Get an instance of SWE Factory suitable to build components
-        GeoPosHelper sweFactory = new GeoPosHelper();
+        SWEHelper sweFactory = new SWEHelper();
 
         // TODO: Create data record description
         dataStruct = sweFactory.createRecord()
-                .name(SENSOR_OUTPUT_NAME)
-                .label(SENSOR_OUTPUT_LABEL)
-                .description(SENSOR_OUTPUT_DESCRIPTION)
-                .addField("sampleTime", sweFactory.createTime()
+                .name(getName())
+                .label("urn:osh:data:weather")
+                .description("Weather measurements")
+                .addField("time", sweFactory.createTime()
                         .asSamplingTimeIsoUTC()
                         .label("Sample Time")
                         .description("Time of data collection"))
-                .addField("data", sweFactory.createText()
-                        .label("Example Data"))
+                .addField("temperature", sweFactory.createQuantity()
+                        .definition(SWEHelper.getCfUri("air_temperature"))
+                        .label("Air Temperature")
+                        .uomCode("Cel")
+                )
+                .addField("pressure", sweFactory.createQuantity()
+                        .definition(SWEHelper.getCfUri("air_pressure"))
+                        .label("Atmospheric Pressure")
+                        .uomCode("hPa")
+                )
+                .addField("windSpeed", sweFactory.createQuantity()
+                        .definition(SWEHelper.getCfUri("wind_speed"))
+                        .label("Wind Speed")
+                        .uomCode("m/s")
+                )
+                .addField("windDirection", sweFactory.createQuantity()
+                        .definition(SWEHelper.getCfUri("wind_from_direction"))
+                        .label("Wind Direction")
+                        .uomCode("deg")
+                        .refFrame(SWEConstants.REF_FRAME_NED, "z")
+                )
                 .build();
 
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
@@ -158,6 +181,24 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         return accumulator / (double) MAX_NUM_TIMING_SAMPLES;
     }
 
+    //reference values around which actual values vary
+    double tempRef = 20.0;
+    double pressRef=1013.0;
+    double windSpeedRef = 5.0;
+    double directionRef = 0.0;
+
+    //initalize then keep new values for each measurement
+    double temp = tempRef;
+    double press = pressRef;
+    double windSpeed = windSpeedRef;
+    double windDir = directionRef;
+
+    private Random rand = new Random();
+
+    private double variation(double val, double ref, double dampingCoef, double noiseSigma){
+        return -dampingCoef*(val-ref) + noiseSigma * rand.nextGaussian();
+    }
+
     @Override
     public void run() {
 
@@ -192,17 +233,44 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
                 ++setCount;
 
-                double timestamp = System.currentTimeMillis() / 1000d;
+                double time = System.currentTimeMillis() / 1000.;
+
+                //temperature; value will increase or decrease by less than 0.1 deg
+                temp += variation(temp, tempRef,0.001,.1);
+
+                //pressure; value will increase or decrease by less than 20hpa
+                press += variation(press,pressRef,0.001,.1);
+
+                //wind speed; keep positive
+                //vary value between +/- 10 m/s
+                windSpeed += variation(windSpeed, windSpeedRef, 0.001,.1);
+                windSpeed = windSpeed < 0.0 ? 0.0 : windSpeed;
+
+                // wind direction; keep between 0 & 360 degrees
+                windDir += 1.0 * (2.0 * Math.random() - 1.0);
+                windDir = windDir < 0.0 ? windDir + 360.0 : windDir;
+                windDir = windDir > 360.0 ? windDir-360 : windDir;
+
+                parentSensor.getLogger().trace(String.format("temp=%5.2f, press=%4.2f, wind speed=%5.2f, wind dir=%3.1f",temp, press, windSpeed,windDir));
+
+
 
                 // TODO: Populate data block
-                dataBlock.setDoubleValue(0, timestamp);
-                dataBlock.setStringValue(1, "Your data here");
+                // Build and publish datablock
+                dataBlock.setDoubleValue(0, time);
+                dataBlock.setDoubleValue(1, temp);
+                dataBlock.setDoubleValue(2, press);
+                dataBlock.setDoubleValue(3, windSpeed);
+                dataBlock.setDoubleValue(4, windDir);
+
 
                 latestRecord = dataBlock;
 
                 latestRecordTime = System.currentTimeMillis();
 
                 eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
+
+                Thread.sleep(3000);
 
                 synchronized (processingLock) {
 

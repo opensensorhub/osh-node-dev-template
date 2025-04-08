@@ -1,4 +1,4 @@
-package com.sample.impl.sensor.mySensor;
+package com.sample.impl.sensor.KY032;
 
 import org.sensorhub.utils.OshBundleActivator;
 

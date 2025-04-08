@@ -1,5 +1,5 @@
-description = 'Put your description here'
-ext.details = "Details here"
+description = 'Simulated Sensor Driver'
+ext.details = "Driver Simulation - OpenSensorHub Driver Development Labs"
 version = '1.0.0'
 
 dependencies {
@@ -29,9 +29,9 @@ osgi {
 ext.pom >>= {
     developers {
         developer {
-            id 'some id'
-            name 'Your name'
-            organization ''
+            id 'Wild_Bill'
+            name 'Bill Brown'
+            organization 'Botts-Inc'
             organizationUrl ''
         }
     }

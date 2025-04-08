@@ -11,7 +11,7 @@
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
 
 ******************************* END LICENSE BLOCK ***************************/
-package com.sample.impl.sensor.mySensor;
+package com.sample.impl.sensor.KY032;
 
 import org.sensorhub.api.config.DisplayInfo;
 import org.sensorhub.api.sensor.SensorConfig;
@@ -31,7 +31,7 @@ import org.sensorhub.api.sensor.SensorConfig;
  * @author your_name
  * @since date
  */
-public class Config extends SensorConfig {
+public class KY032Config extends SensorConfig {
 
     /**
      * The unique identifier for the configured sensor (or sensor platform).
@@ -40,5 +40,7 @@ public class Config extends SensorConfig {
     @DisplayInfo(desc = "Serial number or unique identifier")
     public String serialNumber = "Serial Number From Sensor Config File";
 
+    @DisplayInfo(label="GPIO PIN", desc="Provide the BCM Pin number the KY-032 Sensor is plugged into")
+    public int GPIO_BCM_NUMBER = 23;
 
 }
