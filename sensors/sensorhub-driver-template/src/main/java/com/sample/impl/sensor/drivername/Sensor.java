@@ -1,5 +1,4 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
@@ -29,11 +28,10 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
-    Output output;
+    private Output output;
 
     @Override
     public void doInit() throws SensorHubException {
-
         super.doInit();
 
         // Generate identifiers
@@ -42,40 +40,27 @@ public class Sensor extends AbstractSensorModule<Config> {
 
         // Create and initialize output
         output = new Output(this);
-
         addOutput(output, false);
-
         output.doInit();
-
-        // TODO: Perform other initialization
     }
 
     @Override
     public void doStart() throws SensorHubException {
-
-        if (null != output) {
-
+        if (output != null) {
             // Allocate the necessary resources and start outputs.
             output.doStart();
         }
-
-        // TODO: Perform other startup procedures
     }
 
     @Override
     public void doStop() throws SensorHubException {
-
-        if (null != output) {
-
+        if (output != null) {
             output.doStop();
         }
-
-        // TODO: Perform other shutdown procedures
     }
 
     @Override
     public boolean isConnected() {
-
         // Determine if the sensor is connected.
         return output.isAlive();
     }

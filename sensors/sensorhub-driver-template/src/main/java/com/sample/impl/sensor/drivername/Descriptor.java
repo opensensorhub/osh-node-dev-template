@@ -1,5 +1,4 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
@@ -22,8 +21,7 @@ import org.sensorhub.impl.module.JarModuleProvider;
  */
 public class Descriptor extends JarModuleProvider implements IModuleProvider {
     /**
-     * Retrieves the class implementing the OpenSensorHub interface necessary to
-     * perform SOS/SPS/SOS-T operations.
+     * Retrieves the class implementing the OpenSensorHub interface necessary to perform SOS/SPS/SOS-T operations.
      *
      * @return The class used to interact with the sensor/sensor platform.
      */
