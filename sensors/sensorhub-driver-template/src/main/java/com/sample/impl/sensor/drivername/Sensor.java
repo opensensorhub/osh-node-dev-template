@@ -9,7 +9,6 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
@@ -19,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver providing sensor description, output registration, initialization and shutdown of driver and outputs.
- *
- * @author your_name
- * @since date
+ * Driver implementation for the sensor.
+ * <p>
+ * This class is responsible for providing sensor information, managing output registration,
+ * and performing initialization and shutdown for the driver and its outputs.
  */
 public class Sensor extends AbstractSensorModule<Config> {
 
@@ -54,7 +53,7 @@ public class Sensor extends AbstractSensorModule<Config> {
 
         if (null != output) {
 
-            // Allocate necessary resources and start outputs
+            // Allocate the necessary resources and start outputs.
             output.doStart();
         }
 
@@ -75,7 +74,7 @@ public class Sensor extends AbstractSensorModule<Config> {
     @Override
     public boolean isConnected() {
 
-        // Determine if sensor is connected
+        // Determine if the sensor is connected.
         return output.isAlive();
     }
 }

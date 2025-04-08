@@ -9,7 +9,6 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
@@ -25,9 +24,6 @@ import org.vast.swe.helper.GeoPosHelper;
 
 /**
  * Output specification and provider for {@link Sensor}.
- *
- * @author your_name
- * @since date
  */
 public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
@@ -36,24 +32,22 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     private static final String SENSOR_OUTPUT_DESCRIPTION = "[DESCRIPTION]";
 
     private static final Logger logger = LoggerFactory.getLogger(Output.class);
-
-    private DataRecord dataStruct;
-    private DataEncoding dataEncoding;
-
-    private Boolean stopProcessing = false;
-    private final Object processingLock = new Object();
-
     private static final int MAX_NUM_TIMING_SAMPLES = 10;
-    private int setCount = 0;
+
+    private final Object processingLock = new Object();
     private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
     private final Object histogramLock = new Object();
 
+    private DataRecord dataStruct;
+    private DataEncoding dataEncoding;
+    private Boolean stopProcessing = false;
+    private int setCount = 0;
     private Thread worker;
 
     /**
-     * Constructor
+     * Creates a new output for the sensor driver.
      *
-     * @param parentSensor Sensor driver providing this output
+     * @param parentSensor Sensor driver providing this output.
      */
     Output(Sensor parentSensor) {
 
@@ -92,7 +86,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Begins processing data for output
+     * Begins processing data for output.
      */
     public void doStart() {
 
@@ -108,7 +102,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Terminates processing data for output
+     * Terminates processing data for output.
      */
     public void doStop() {
 
@@ -121,7 +115,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
     }
 
     /**
-     * Check to validate data processing is still running
+     * Verify if the data processing thread is still active.
      *
      * @return true if worker thread is active, false otherwise
      */
@@ -183,10 +177,10 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
                     int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
 
-                    // Get a sampling time for latest set based on previous set sampling time
+                    // Get a sampling time for the latest set based on the previous set sampling time.
                     timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
 
-                    // Set latest sampling time to now
+                    // Set the latest sampling time to now.
                     lastSetTimeMillis = timingHistogram[setIndex];
                 }
 
@@ -216,8 +210,8 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
 
         } finally {
 
-            // Reset the flag so that when driver is restarted loop thread continues
-            // until doStop called on the output again
+            // Reset the flag so that when the driver is restarted loop thread continues
+            // until doStop called is on the output again.
             stopProcessing = false;
 
             logger.debug("Terminating worker thread: {}", this.name);

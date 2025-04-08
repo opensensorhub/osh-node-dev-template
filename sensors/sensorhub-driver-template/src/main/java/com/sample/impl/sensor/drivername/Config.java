@@ -18,14 +18,15 @@ import org.sensorhub.api.sensor.SensorConfig;
 /**
  * Configuration settings for the {@link Sensor} driver exposed via the OpenSensorHub Admin panel.
  * <p>
- * Configuration settings take the form of
+ * Public fields are exposed in the Admin panel for configuration by the user.
+ * These fields can be annotated with the DisplayInfo annotation to provide additional information to the user
+ * or to restrict the values that can be entered.
+ * <p>
+ * Configuration takes the form of:
  * <pre>{@code
  * @DisplayInfo(label = "Field Label", desc = "A description of the field to be shown in the UI.")
  * public Type configOption = "default value";
  * }</pre>
- * <p>
- * Containing an annotation describing the setting and if applicable, its range of values
- * as well as a public access variable of the given Type
  */
 public class Config extends SensorConfig {
     /**
