@@ -17,33 +17,26 @@ import net.opengis.swe.v20.DataEncoding;
 import net.opengis.swe.v20.DataRecord;
 import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vast.swe.helper.GeoPosHelper;
 
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
-
 /**
  * Output specification and provider for {@link Sensor}.
  */
-public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
-    private static final String SENSOR_OUTPUT_NAME = "SensorOutput";
-    private static final String SENSOR_OUTPUT_LABEL = "Sensor Output";
-    private static final String SENSOR_OUTPUT_DESCRIPTION = "Sensor output data";
+public class Output extends AbstractSensorOutput<Sensor> {
+    static final String SENSOR_OUTPUT_NAME = "SensorOutput";
+    static final String SENSOR_OUTPUT_LABEL = "Sensor Output";
+    static final String SENSOR_OUTPUT_DESCRIPTION = "Sensor output data";
 
-    private static final Logger logger = LoggerFactory.getLogger(Output.class);
     private static final int MAX_NUM_TIMING_SAMPLES = 10;
 
-    private final Object processingLock = new Object();
     private final ArrayList<Double> intervalHistogram = new ArrayList<>(MAX_NUM_TIMING_SAMPLES);
     private final Object histogramLock = new Object();
+    private final Object processingLock = new Object();
 
-    private DataRecord dataStruct;
+    private DataRecord dataRecord;
     private DataEncoding dataEncoding;
-    private Boolean stopProcessing = false;
-    private Thread worker;
 
     /**
      * Creates a new output for the sensor driver.
@@ -62,7 +55,7 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         GeoPosHelper sweFactory = new GeoPosHelper();
 
         // Create the data record description
-        dataStruct = sweFactory.createRecord()
+        dataRecord = sweFactory.createRecord()
                 .name(SENSOR_OUTPUT_NAME)
                 .label(SENSOR_OUTPUT_LABEL)
                 .description(SENSOR_OUTPUT_DESCRIPTION)
@@ -77,36 +70,9 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
     }
 
-    /**
-     * Begins processing data for output.
-     */
-    public void doStart() {
-        // Instantiate a new worker thread
-        worker = new Thread(this, this.name);
-        worker.start();
-    }
-
-    /**
-     * Terminates processing data for output.
-     */
-    public void doStop() {
-        synchronized (processingLock) {
-            stopProcessing = true;
-        }
-    }
-
-    /**
-     * Verify if the data processing thread is still active.
-     *
-     * @return true if worker thread is active, false otherwise.
-     */
-    public boolean isAlive() {
-        return worker.isAlive();
-    }
-
     @Override
     public DataComponent getRecordDescription() {
-        return dataStruct;
+        return dataRecord;
     }
 
     @Override
@@ -125,41 +91,23 @@ public class Output extends AbstractSensorOutput<Sensor> implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        boolean processSets = true;
+    /**
+     * Sets the data for the output and publishes it.
+     */
+    public void setData(long timestamp, String data) {
+        synchronized (processingLock) {
+            DataBlock dataBlock = latestRecord == null ? dataRecord.createDataBlock() : latestRecord.renew();
 
-        try {
-            while (processSets) {
-                long timestamp = System.currentTimeMillis();
-                DataBlock dataBlock = latestRecord == null ? dataStruct.createDataBlock() : latestRecord.renew();
+            updateIntervalHistogram();
 
-                updateIntervalHistogram();
+            // Populate the data block
+            dataBlock.setDoubleValue(0, timestamp / 1000d);
+            dataBlock.setStringValue(1, data);
 
-                // Populate the data block
-                dataBlock.setDoubleValue(0, timestamp / 1000d);
-                dataBlock.setStringValue(1, "Your data here");
-
-                // Publish the data block
-                latestRecord = dataBlock;
-                latestRecordTime = timestamp;
-                eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
-
-                // Simulate a delay between data samples
-                sleep(100);
-
-                synchronized (processingLock) {
-                    processSets = !stopProcessing;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
-        } finally {
-            // Reset the flag so that when the driver is restarted loop thread continues
-            // until doStop called is on the output again.
-            stopProcessing = false;
-
-            logger.debug("Terminating worker thread: {}", this.name);
+            // Publish the data block
+            latestRecord = dataBlock;
+            latestRecordTime = timestamp;
+            eventHandler.publish(new DataEvent(latestRecordTime, Output.this, dataBlock));
         }
     }
 

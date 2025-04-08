@@ -23,12 +23,14 @@ import org.slf4j.LoggerFactory;
  * and performing initialization and shutdown for the driver and its outputs.
  */
 public class Sensor extends AbstractSensorModule<Config> {
-    public static final String UID_PREFIX = "urn:osh:template_driver:";
-    public static final String XML_PREFIX = "TEMPLATE_DRIVER_";
+    static final String UID_PREFIX = "urn:osh:template_driver:";
+    static final String XML_PREFIX = "TEMPLATE_DRIVER_";
 
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
-    private Output output;
+    Output output;
+    Thread processingThread;
+    volatile boolean doProcessing = true;
 
     @Override
     public void doInit() throws SensorHubException {
@@ -46,22 +48,49 @@ public class Sensor extends AbstractSensorModule<Config> {
 
     @Override
     public void doStart() throws SensorHubException {
-        if (output != null) {
-            // Allocate the necessary resources and start outputs.
-            output.doStart();
-        }
+        super.doStart();
+        startProcessing();
     }
 
     @Override
     public void doStop() throws SensorHubException {
-        if (output != null) {
-            output.doStop();
-        }
+        super.doStop();
+        stopProcessing();
     }
 
     @Override
     public boolean isConnected() {
-        // Determine if the sensor is connected.
-        return output.isAlive();
+        return processingThread != null && processingThread.isAlive();
+    }
+
+    /**
+     * Starts the data processing thread.
+     * <p>
+     * This method simulates sensor data collection and processing by generating data samples at regular intervals.
+     */
+    public void startProcessing() {
+        doProcessing = true;
+
+        processingThread = new Thread(() -> {
+            while (doProcessing) {
+                // Simulate data collection and processing
+                output.setData(System.currentTimeMillis(), "Sample Data");
+
+                // Simulate a delay between data samples
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        processingThread.start();
+    }
+
+    /**
+     * Signals the processing thread to stop.
+     */
+    public void stopProcessing() {
+        doProcessing = false;
     }
 }
