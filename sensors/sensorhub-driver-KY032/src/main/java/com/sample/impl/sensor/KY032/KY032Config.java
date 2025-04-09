@@ -17,7 +17,7 @@ import org.sensorhub.api.config.DisplayInfo;
 import org.sensorhub.api.sensor.SensorConfig;
 
 /**
- * Configuration settings for the {@link Sensor} driver exposed via the OpenSensorHub Admin panel.
+ * Configuration settings for the {@link KY032Sensor} driver exposed via the OpenSensorHub Admin panel.
  * <p>
  * Configuration settings take the form of
  * <code>
@@ -42,5 +42,6 @@ public class KY032Config extends SensorConfig {
 
     @DisplayInfo(label="GPIO PIN", desc="Provide the BCM Pin number the KY-032 Sensor is plugged into")
     public int GPIO_BCM_NUMBER = 23;
+
 
 }

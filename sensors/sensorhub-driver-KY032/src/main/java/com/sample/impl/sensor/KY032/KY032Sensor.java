@@ -9,23 +9,17 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.KY032;
 
-import org.sensorhub.api.common.SensorHubException;
-import org.sensorhub.impl.sensor.AbstractSensorModule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-// ADDED IMPORT FOR MODULES
-
-// myNote: Added for KY-032 Sensor
-// PI4J DEPENDENCIES
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalInputConfig;
-import com.pi4j.io.gpio.digital.DigitalState;
+import org.sensorhub.api.common.SensorHubException;
+import org.sensorhub.impl.sensor.AbstractSensorModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,7 +41,7 @@ public class KY032Sensor extends AbstractSensorModule<KY032Config> {
 
     @Override
     protected void updateSensorDescription() {
-        synchronized (sensorDescLock){              // synchronized function provides for thread synchronization, ensuring that one thread can execute function at a time
+        synchronized (sensorDescLock) {              // synchronized function provides for thread synchronization, ensuring that one thread can execute function at a time
             super.updateSensorDescription();
             sensorDescription.setDescription("This shall be my modified description!");
 
@@ -70,15 +64,15 @@ public class KY032Sensor extends AbstractSensorModule<KY032Config> {
 
         // TODO: Perform other initialization
         // myNote:
-        // initalize pi4jContext
+        // initialize pi4jContext
         System.out.println("Creating Sensor...");
 
         // Create Pi4J Context
         pi4j = Pi4J.newAutoContext();
         // Create a DigitalInput Configuration
         DigitalInputConfig inputConfig = DigitalInput.newConfigBuilder(pi4j)
-                .id("sensor")
-                .name("Obstacle Sensor")
+                .id("KY032")
+                .name("KY032 Obstacle Sensor")
                 .address(config.GPIO_BCM_NUMBER)
                 .build();
 
@@ -97,25 +91,19 @@ public class KY032Sensor extends AbstractSensorModule<KY032Config> {
         System.out.println("Sensor has been started...");
         if (null != output) {
             // Allocate necessary resources and start outputs
-            //output.doStart(pi4jInput);
             System.out.println("Listening to Sensor...");
-            pi4jInput.addListener(e -> {
-                System.out.println(e.state());
-                // This may be a way to pass the state over
-                output.doStart(e.state() == DigitalState.LOW);
-            });
-    }
+            // Add listener requires a Digital State Change Listener to register an object
+            pi4jInput.addListener(output);
+
+        }
 
         // TODO: Perform other startup procedures
 
     }
 
-@Override
+    @Override
     public void doStop() throws SensorHubException {
 
-        if (null != output) {
-            output.doStop();
-        }
         // TODO: Perform other shutdown procedures
         pi4j.shutdown();
         System.out.println("pi4j instance has been terminated...");
@@ -125,6 +113,7 @@ public class KY032Sensor extends AbstractSensorModule<KY032Config> {
     @Override
     public boolean isConnected() {
 
+        // Determine if sensor is connected
         // Determine if sensor is connected
         return output.isAlive();
     }

@@ -223,14 +223,5 @@
     "moduleClass": "org.sensorhub.impl.service.consys.ConSysApiService",
     "name": "Connected Systems API Service",
     "autoStart": true
-  },
-  {
-    "objClass": "com.sample.impl.sensor.KY032.Config",
-    "serialNumber": "Serial Number From Sensor Config File",
-    "lastUpdated": "2025-03-19T13:53:13.006-0500",
-    "id": "40f54466-47d8-4519-bea9-db0b889608b4",
-    "moduleClass": "com.sample.impl.sensor.KY032.Sensor",
-    "name": "New Sensor Gradle Build Description",
-    "autoStart": false
   }
 ]

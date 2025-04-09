@@ -9,11 +9,9 @@
  for the specific language governing rights and limitations under the License.
 
  Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.KY032;
 
-import com.pi4j.io.gpio.digital.DigitalState;
 import net.opengis.swe.v20.DataBlock;
 import net.opengis.swe.v20.DataComponent;
 import net.opengis.swe.v20.DataEncoding;
@@ -23,19 +21,22 @@ import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.swe.SWEHelper;
+
 // pi4J imports
-import com.pi4j.io.gpio.digital.DigitalInput;
+import com.pi4j.io.gpio.digital.DigitalState;
+import com.pi4j.io.gpio.digital.DigitalStateChangeEvent;
+import com.pi4j.io.gpio.digital.DigitalStateChangeListener;
 
 /**
  * Output specification and provider for {@link KY032Sensor}.
- *
- * @author your_name
+ * @author Bill Brown
  * @since date
  */
-public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Runnable {
+public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements DigitalStateChangeListener {
 
-    private static final String SENSOR_OUTPUT_NAME = "KY-032 SENSOR";
-    private static final String SENSOR_OUTPUT_LABEL = "KY-032";
+
+    private static final String SENSOR_OUTPUT_NAME = "KY-032 SENSOR TEST";
+    private static final String SENSOR_OUTPUT_LABEL = "KY-032 Test";
     private static final String SENSOR_OUTPUT_DESCRIPTION = "The KY-032 Obstacle Avoidance Sensor module is a distance-adjustable, infrared proximity sensor designed for wheeled robots";
 
     private static final Logger logger = LoggerFactory.getLogger(KY032Output.class);
@@ -45,35 +46,30 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Ru
     private DataEncoding dataEncoding;              // used to provide the default encoding method for each output
 
     // PROPERTIES DEFINED BY OUTPUT TEMPLATE
-    private Boolean stopProcessing = false;
-    private final Object processingLock = new Object();
-
     private static final int MAX_NUM_TIMING_SAMPLES = 10;
     private int setCount = 0;
     private final long[] timingHistogram = new long[MAX_NUM_TIMING_SAMPLES];
     private final Object histogramLock = new Object();
 
-    private Thread worker;
+    private long lastSetTimeMillis = System.currentTimeMillis();
+
     // myNote:
     // private DigitalInput sensorInputDetection;
     private volatile boolean sensorDetectionReading;
 
-    // CREATE A SENSOR INSTANCE USING MY KY032 CLASS
-    //private final KY032 myKY032 = new KY032(23);
     /**
-     * Constructor
+     CONSTRUCTOR
      * @param parentSensor Sensor driver providing this output
      */
     KY032Output(KY032Sensor parentSensor) {
         super(SENSOR_OUTPUT_NAME, parentSensor);    // Creates an instance of the OUPUT
         logger.debug("Output created");
-        System.out.println("Output Created...");
+        System.out.println("Output Created using "+ parentSensor.getName());
     }
 
 
-
     /**
-     * Initializes the data structure for the output, defining the fields, their ordering,
+     * INITIALIZE the data structure for the output, defining the fields, their ordering,
      * and data types.
      */
     void doInit() {
@@ -108,44 +104,14 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Ru
         System.out.println("Output Initialized...");
     }
 
-    /**
-     * Begins processing data for output
-     */
-    public void doStart(boolean sensorDetectionReading ) {
-        // myNote:
-        // Add sensor reading to this global class instance
-        System.out.println("Ouput Starting...");
-        this.sensorDetectionReading = sensorDetectionReading;
-
-        // Instantiate a new worker thread
-        worker = new Thread(this, this.name);
-
-        // TODO: Perform other startup
-        logger.info("Starting worker thread: {}", worker.getName());
-
-        // Start the worker thread
-        worker.start();
-    }
-
-    /**
-     * Terminates processing data for output
-     */
-    public void doStop() {
-        synchronized (processingLock) {
-            stopProcessing = true;
-        }
-
-        // TODO: Perform other shutdown procedures
-    }
 
     /**
      * Check to validate data processing is still running
-     *
      * @return true if worker thread is active, false otherwise
      */
     public boolean isAlive() {
 
-        return worker.isAlive();
+        return true;
     }
 
     @Override
@@ -174,63 +140,45 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Ru
         return accumulator / (double) MAX_NUM_TIMING_SAMPLES;
     }
 
-
-
     @Override
-    public void run() {
-        System.out.println("Thread Running...");
-        boolean processSets = true;
-        long lastSetTimeMillis = System.currentTimeMillis();
+    public void onDigitalStateChange(DigitalStateChangeEvent digitalStateChangeEvent) {
+        // GET BOOLEAN READING FOR SENSOR
+        sensorDetectionReading = digitalStateChangeEvent.state() == DigitalState.LOW;
 
-        try {
-            while (processSets) {
-                DataBlock dataBlock;
-                if (latestRecord == null) {
-                    dataBlock = dataStruct.createDataBlock();
-                } else {
-                    dataBlock = latestRecord.renew();
-                }
-                synchronized (histogramLock) {
-                    int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
+        // REPORT READING IN TERMINAL FOR DEBUGGING
+        System.out.println("Output:");
+        System.out.println("\tDetection: " + sensorDetectionReading);
 
-                    // Get a sampling time for latest set based on previous set sampling time
-                    timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
-
-                    // Set latest sampling time to now
-                    lastSetTimeMillis = timingHistogram[setIndex];
-                }
-
-
-                // TODO: Populate data block
-                // myNote:
-                ++setCount;
-                double timestamp = System.currentTimeMillis() / 1000d;
-
-                dataBlock.setDoubleValue(0, timestamp);
-                dataBlock.setBooleanValue(1, sensorDetectionReading);
-
-                latestRecord = dataBlock;
-                latestRecordTime = System.currentTimeMillis();
-
-                eventHandler.publish(new DataEvent(latestRecordTime, KY032Output.this, dataBlock));
-
-
-                synchronized (processingLock) {
-                    processSets = !stopProcessing;
-                }
-
-            }
-
-        } catch (Exception e) {
-
-            logger.error("Error in worker thread: {}", Thread.currentThread().getName(), e);
-
-        } finally {
-
-            // Reset the flag so that when driver is restarted loop thread continues
-            // until doStop called on the output again
-            stopProcessing = false;
-            logger.debug("Terminating worker thread: {}", this.name);
+        DataBlock dataBlock;
+        if (latestRecord == null) {
+            dataBlock = dataStruct.createDataBlock();
+        } else {
+            dataBlock = latestRecord.renew();
         }
+        synchronized (histogramLock) {
+            int setIndex = setCount % MAX_NUM_TIMING_SAMPLES;
+
+            // Get a sampling time for latest set based on previous set sampling time
+            timingHistogram[setIndex] = System.currentTimeMillis() - lastSetTimeMillis;
+
+            // Set latest sampling time to now
+            lastSetTimeMillis = timingHistogram[setIndex];
+        }
+
+
+        // TODO: Populate data block
+        // myNote:
+        ++setCount;
+        double timestamp = System.currentTimeMillis() / 1000d;
+
+        dataBlock.setDoubleValue(0, timestamp);
+        dataBlock.setBooleanValue(1, sensorDetectionReading);
+
+        latestRecord = dataBlock;
+        latestRecordTime = System.currentTimeMillis();
+
+        eventHandler.publish(new DataEvent(latestRecordTime, KY032Output.this, dataBlock));
+
+
     }
 }

@@ -20,7 +20,7 @@ dependencies {
   // !!!!!
   //
   implementation project(':sensorhub-driver-KY032')
-  implementation project(':sensorhub-driver-simulator')
+  //implementation project(':sensorhub-driver-simulator')
   //
   // EX:
   // implementation project(':sensorhub-driver-rtpcam')
