@@ -69,28 +69,40 @@ distributions {
     }
   }
 }
-/*
-task deployToPi(type: Exec){
+
+
+// Build Project and send to Pi
+tasks.register("deployToPi",Exec){
   dependsOn(build)
 
   //define paths and settings:
   def piUser = "pi"
-  def piHost = "192.168.50.122"
+  def piHost = "192.168.1.122"
   def piPassword = "raspberry"
   def piTargetDir = "/home/pi/Desktop/KY032"
-  def distributionZip = "build/distributions/OSH_Distribution_01-1.0.0.zip"
+  def localZipPath = "build/distributions/OSH_Distribution_01-1.0.0.zip"
+  def remoteUnzipDir = "${piTargetDir}/OSH_Distribution_01-1.0.0"
 
   doFirst {
-    if (!file(distributionZip).exists()) {
-      throw new GradleException("Distribution ZIP not found: $distributionZip")
+    if (!file(localZipPath).exists()) {
+      println("File Does Not Exist")
+      throw new GradleException("Distribution ZIP not found")
     }
   }
   // Use sshpass + scp to send the file
   commandLine 'sh', '-c', """
-        sshpass -p '${piPassword}' scp '${distributionZip}' ${piUser}@${piHost}:${piTargetDir}
-    """
+    sshpass -p '${piPassword}' scp '${localZipPath}' ${piUser}@${piHost}:${piTargetDir} && \
+    sshpass -p '${piPassword}' ssh ${piUser}@${piHost} '
+    cd ${piTargetDir} && \
+    unzip -o OSH_Distribution_01-1.0.0.zip
+    '
+  """
+  // Add the following under 'unzip' if you want to start the program server
+//  cd ${remoteUnzipDir} && \
+//    chmod +x launch.sh && \
+//    ./launch.sh
+
 }
 
-*/
 
 apply from: gradle.oshCoreDir + '/release.gradle'

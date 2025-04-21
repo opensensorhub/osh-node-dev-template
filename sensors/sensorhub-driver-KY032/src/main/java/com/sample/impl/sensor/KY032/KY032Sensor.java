@@ -12,14 +12,17 @@
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.KY032;
 
-import com.pi4j.Pi4J;
-import com.pi4j.context.Context;
-import com.pi4j.io.gpio.digital.DigitalInput;
-import com.pi4j.io.gpio.digital.DigitalInputConfig;
+// STANDARD TEMPLATE IMPORTS
 import org.sensorhub.api.common.SensorHubException;
 import org.sensorhub.impl.sensor.AbstractSensorModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+//PI4J IMPORTS
+import com.pi4j.Pi4J;
+import com.pi4j.context.Context;
+import com.pi4j.io.gpio.digital.DigitalInput;
+import com.pi4j.io.gpio.digital.DigitalInputConfig;
 
 
 /**
@@ -29,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * @since date
  */
 public class KY032Sensor extends AbstractSensorModule<KY032Config> {
-
     private static final Logger logger = LoggerFactory.getLogger(KY032Sensor.class);
 
     KY032Output output;
@@ -86,19 +88,17 @@ public class KY032Sensor extends AbstractSensorModule<KY032Config> {
         output.doInit();
     }
 
+    // myNote:
+    // Upon Starting, create a listener on the GPIO
     @Override
     public void doStart() throws SensorHubException {
         System.out.println("Sensor has been started...");
         if (null != output) {
             // Allocate necessary resources and start outputs
             System.out.println("Listening to Sensor...");
-            // Add listener requires a Digital State Change Listener to register an object
+            // Add listener requires a Digital State Change Listener to register an object. Bind that to Ouptut class
             pi4jInput.addListener(output);
-
         }
-
-        // TODO: Perform other startup procedures
-
     }
 
     @Override

@@ -14,7 +14,9 @@
 package com.sample.impl.sensor.KY032;
 
 import org.sensorhub.api.config.DisplayInfo;
+import org.sensorhub.api.sensor.PositionConfig;
 import org.sensorhub.api.sensor.SensorConfig;
+import org.sensorhub.api.sensor.PositionConfig.LLALocation;
 
 /**
  * Configuration settings for the {@link KY032Sensor} driver exposed via the OpenSensorHub Admin panel.
@@ -38,10 +40,9 @@ public class KY032Config extends SensorConfig {
      */
     @DisplayInfo.Required
     @DisplayInfo(desc = "Serial number or unique identifier")
-    public String serialNumber = "Serial Number From Sensor Config File";
+    public String serialNumber = "urn:ky032:is:cool";
 
+    @DisplayInfo.Required
     @DisplayInfo(label="GPIO PIN", desc="Provide the BCM Pin number the KY-032 Sensor is plugged into")
     public int GPIO_BCM_NUMBER = 23;
-
-
 }

@@ -12,15 +12,20 @@
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.KY032;
 
+// SWE
 import net.opengis.swe.v20.DataBlock;
 import net.opengis.swe.v20.DataComponent;
 import net.opengis.swe.v20.DataEncoding;
 import net.opengis.swe.v20.DataRecord;
+import org.vast.swe.SWEHelper;
+import org.vast.swe.helper.GeoPosHelper;
+
+
 import org.sensorhub.api.data.DataEvent;
 import org.sensorhub.impl.sensor.AbstractSensorOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vast.swe.SWEHelper;
+
 
 // pi4J imports
 import com.pi4j.io.gpio.digital.DigitalState;
@@ -72,33 +77,36 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Di
      * INITIALIZE the data structure for the output, defining the fields, their ordering,
      * and data types.
      */
+
+
     void doInit() {
 
         logger.debug("Initializing Output");
         System.out.println("Initializing Output");
 
         // Get an instance of SWE Factory suitable to build components
-        //GeoPosHelper sweFactory = new GeoPosHelper();
+        GeoPosHelper geoHelper = new GeoPosHelper();
         SWEHelper sweFactory = new SWEHelper();         // Create sweFactory Record using SWEHelper Data Model:
 
         // TODO: Create data record description
         // MyNote:
-        // CREATE DATA STRUCTURE FOR KY032 SENSOR
+        // CREATE DATA STRUCTURE FOR THE KY032 SENSOR RECORD OUTPUT
+        // Every Record needs name, label, definition, and description
         dataStruct = sweFactory.createRecord()
                 .name(SENSOR_OUTPUT_NAME)
                 .label(SENSOR_OUTPUT_LABEL)
-                .definition("urn:osh:data:KY032")
+                .definition(SWEHelper.getPropertyUri("KY032Output"))
                 .description(SENSOR_OUTPUT_DESCRIPTION)
                 .addField("time", sweFactory.createTime()
                         .asSamplingTimeIsoUTC()
                         .label("Sample Time")
                         .description("Time of data collection"))
                 // MyNote:
-                // ADDED FIELD FOR OBSTRUCTION
+                // ADDED FIELDS
                 .addField("ObstructionDetected", sweFactory.createBoolean()
-                        .label("Obstruction Detected:"))
+                        .label("Obstruction Detected:")
+                        .definition(SWEHelper.getPropertyUri("obstruction")))
                 .build();
-
         dataEncoding = sweFactory.newTextEncoding(",", "\n");
         logger.debug("Initializing Output Complete");
         System.out.println("Output Initialized...");
@@ -140,6 +148,12 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Di
         return accumulator / (double) MAX_NUM_TIMING_SAMPLES;
     }
 
+    // myNote:
+    // pi4j uses the DigitalStateChangeListener() class which is bound to this Output class using 'implements'
+    // DigitalStateChangeListener() requires uses onDigitalStateChange method to listen to a DigitalStateChangeEvent()--another pi4j class--to listen to.
+    // This allows Sensor class to pass Output instance as an argument in pi4j listener
+    // https://www.pi4j.com/pi4j-example-crowpi/com.pi4j.crowpi/com/pi4j/crowpi/components/events/DigitalEventListener.html
+
     @Override
     public void onDigitalStateChange(DigitalStateChangeEvent digitalStateChangeEvent) {
         // GET BOOLEAN READING FOR SENSOR
@@ -149,6 +163,7 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Di
         System.out.println("Output:");
         System.out.println("\tDetection: " + sensorDetectionReading);
 
+        // The below code is template code for OSH
         DataBlock dataBlock;
         if (latestRecord == null) {
             dataBlock = dataStruct.createDataBlock();
@@ -168,11 +183,14 @@ public class KY032Output extends AbstractSensorOutput<KY032Sensor> implements Di
 
         // TODO: Populate data block
         // myNote:
+        // Populate Data Block
+
         ++setCount;
         double timestamp = System.currentTimeMillis() / 1000d;
 
         dataBlock.setDoubleValue(0, timestamp);
         dataBlock.setBooleanValue(1, sensorDetectionReading);
+
 
         latestRecord = dataBlock;
         latestRecordTime = System.currentTimeMillis();
