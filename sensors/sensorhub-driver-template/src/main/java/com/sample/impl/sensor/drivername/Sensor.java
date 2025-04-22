@@ -1,5 +1,4 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
@@ -8,8 +7,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2020-2021 Botts Innovative Research, Inc. All Rights Reserved.
-
+ Copyright (C) 2020-2025 Botts Innovative Research, Inc. All Rights Reserved.
  ******************************* END LICENSE BLOCK ***************************/
 package com.sample.impl.sensor.drivername;
 
@@ -19,63 +17,80 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sensor driver providing sensor description, output registration, initialization and shutdown of driver and outputs.
- *
- * @author your_name
- * @since date
+ * Driver implementation for the sensor.
+ * <p>
+ * This class is responsible for providing sensor information, managing output registration,
+ * and performing initialization and shutdown for the driver and its outputs.
  */
 public class Sensor extends AbstractSensorModule<Config> {
+    static final String UID_PREFIX = "urn:osh:template_driver:";
+    static final String XML_PREFIX = "TEMPLATE_DRIVER_";
 
     private static final Logger logger = LoggerFactory.getLogger(Sensor.class);
 
     Output output;
+    Thread processingThread;
+    volatile boolean doProcessing = true;
 
     @Override
     public void doInit() throws SensorHubException {
-
         super.doInit();
 
         // Generate identifiers
-        generateUniqueID("[URN]", config.serialNumber);
-        generateXmlID("[XML-PREFIX]", config.serialNumber);
+        generateUniqueID(UID_PREFIX, config.serialNumber);
+        generateXmlID(XML_PREFIX, config.serialNumber);
 
         // Create and initialize output
         output = new Output(this);
-
         addOutput(output, false);
-
         output.doInit();
-
-        // TODO: Perform other initialization
     }
 
     @Override
     public void doStart() throws SensorHubException {
-
-        if (null != output) {
-
-            // Allocate necessary resources and start outputs
-            output.doStart();
-        }
-
-        // TODO: Perform other startup procedures
+        super.doStart();
+        startProcessing();
     }
 
     @Override
     public void doStop() throws SensorHubException {
-
-        if (null != output) {
-
-            output.doStop();
-        }
-
-        // TODO: Perform other shutdown procedures
+        super.doStop();
+        stopProcessing();
     }
 
     @Override
     public boolean isConnected() {
+        return processingThread != null && processingThread.isAlive();
+    }
 
-        // Determine if sensor is connected
-        return output.isAlive();
+    /**
+     * Starts the data processing thread.
+     * <p>
+     * This method simulates sensor data collection and processing by generating data samples at regular intervals.
+     */
+    public void startProcessing() {
+        doProcessing = true;
+
+        processingThread = new Thread(() -> {
+            while (doProcessing) {
+                // Simulate data collection and processing
+                output.setData(System.currentTimeMillis(), "Sample Data");
+
+                // Simulate a delay between data samples
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        processingThread.start();
+    }
+
+    /**
+     * Signals the processing thread to stop.
+     */
+    public void stopProcessing() {
+        doProcessing = false;
     }
 }
